@@ -6,6 +6,7 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import axios from 'axios'
 import "./axios"
+import "./permission" //路由拦截
 
 Vue.use(ElementUI)
 
