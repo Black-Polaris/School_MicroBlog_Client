@@ -30,8 +30,8 @@ export default {
   data() {
     return {
       ruleForm: {
-        username: '',
-        password: '',
+        username: 'admin',
+        password: '123456',
       },
       rules: {
         username: [
@@ -48,7 +48,22 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('submit!');
+          const _this = this
+          this.$axios.post('http://localhost:8083/login', this.ruleForm)
+              .then(res => {
+                const jwt = res.headers['authorization']
+                const userInfo = res.data.data
+
+                // 把信息共享
+                _this.$store.commit("SET_TOKEN", jwt)
+                _this.$store.commit("SET_USERINFO", userInfo)
+
+                // 获取用户信息
+                console.log(_this.$store.getters.getUser)
+
+                _this.$router.push('/blogs')
+              })
+
         } else {
           console.log('error submit!!');
           return false;
