@@ -49,7 +49,7 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           const _this = this
-          this.$axios.post('http://localhost:8083/login', this.ruleForm)
+          this.$axios.post('/login', this.ruleForm)
               .then(res => {
                 const jwt = res.headers['authorization']
                 const userInfo = res.data.data
