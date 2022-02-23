@@ -55,7 +55,7 @@ export default {
       navList:[
         {name:'/blogs',navItem:'首页'},
         {name:'/login',navItem: '热门微博'},
-        {name:'/blog/add',navItem: '个人中心'}
+        {name:'/Mine',navItem: '个人中心'}
       ],
 
       // 查找内容

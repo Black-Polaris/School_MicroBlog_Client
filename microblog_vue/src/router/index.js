@@ -4,7 +4,8 @@ import Login from "@/views/Login";
 import Blogs from "@/views/Blogs";
 import BlogEdit from "@/views/BlogEdit";
 import BlogDetail from "@/views/BlogDetail";
-import Blog from "@/views/Blog";
+import Mine from "@/views/Mine";
+import IndexBlogs from "@/views/IndexBlogs";
 
 Vue.use(VueRouter)
 
@@ -13,6 +14,11 @@ const routes = [
     path: '/',
     name: 'Index',
     redirect: {name: "Blogs"}
+  },
+  {
+    path: '/indexBlogs',
+    name: 'IndexBlogs',
+    component: IndexBlogs
   },
   {
     path: '/blogs',
@@ -44,6 +50,11 @@ const routes = [
     path: '/blog/:blogId',
     name: 'BlogDetail',
     component: BlogDetail
+  },
+  {
+    path: '/mine',
+    name: 'Mine',
+    component: Mine
   }
 ]
 
