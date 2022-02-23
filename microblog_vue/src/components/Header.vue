@@ -1,37 +1,82 @@
 <template>
   <div>
-    <div class="m-content">
-      <h3>欢迎光临</h3>
-      <el-avatar :size="50" :src="user.avatar"></el-avatar>
-      <div>{{ user.username }}</div>
-      <div class="m-action">
-        <span><el-link type="primary">主页</el-link></span>
-        <el-divider direction="vertical"></el-divider>
-        <span><el-link type="success">发表博客</el-link></span>
+<!--    导航菜单-->
+    <el-menu :default-active="this.$route.path"
+             router
+             class="el-menu-demo"
+             mode="horizontal"
+             background-color="white"
+             text-color="#222"
+             active-text-color="red">
+      <el-menu-item v-for="(item,i) in navList" :key=i :index="item.name">
+        {{item.navItem}}
+      </el-menu-item>
 
-        <el-divider direction="vertical"></el-divider>
-        <span v-show="!hasLogin"><el-link type="info" href="/login" @click="login">登录</el-link></span>
-        <span v-show="hasLogin"><el-link type="danger" @click="logout">退出</el-link></span>
+<!--      登录和退出按钮-->
+      <span v-show="!hasLogin"><el-button class="el-icon-switch-button" type="primary" round style="float:right;margin: 10px;" href="/login" @click="login">登录</el-button></span>
+      <span v-show="hasLogin"><el-button class="el-icon-switch-button" type="danger" round style="float:right;margin: 10px" @click="logout">退出</el-button></span>
+<!--      发表微博和头像-->
+      <el-button type="primary" icon="el-icon-edit" round style="float:right;margin: 10px;" @click="dialogVisible = true">发表微博</el-button>
+      <el-avatar :size="40" :src="user.avatar" style="float:right;margin: 10px;"></el-avatar>
+
+<!--      微博搜索栏-->
+      <div style="text-align: center;margin: 15px">
+        <el-input
+            @keyup.enter.native="searchClick"
+            placeholder="搜索微博"
+            prefix-icon="el-icon-search"
+            size="small"
+            clearable
+            style="width: 200px;margin-right: 10px"
+            v-model="searchWords">
+        </el-input>
+        <el-button size="small" type="primary" icon="el-icon-search" @click="searchClick">搜索</el-button>
       </div>
-    </div>
+    </el-menu>
+
+<!--    微博编辑页面-->
+    <el-dialog
+        :visible.sync="dialogVisible"
+        :before-close="handleClose">
+     <BlogEdit></BlogEdit>
+    </el-dialog>
 
   </div>
 </template>
 
 <script>
+
+import BlogEdit from "@/views/BlogEdit";
 export default {
   name: "Header",
+  components: {BlogEdit},
   data() {
     return {
+      navList:[
+        {name:'/blogs',navItem:'首页'},
+        {name:'/login',navItem: '热门微博'},
+        {name:'/blog/add',navItem: '个人中心'}
+      ],
+
+      // 查找内容
+      searchWords: '',
+
       user: {
         username: '请先登录',
         avatar:"https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"
       },
-      hasLogin: false
+      hasLogin: false,
+      dialogVisible: false
 
     }
   },
   methods: {
+    // 登录
+    login() {
+      this.$router.push("/login")
+    },
+
+    // 退出登录
     logout() {
       const _this = this
       // 由于在后端的接口中logout是需要认证后才有权限的，所以将token传入
@@ -43,6 +88,14 @@ export default {
         _this.$store.commit("REMOVE_INFO")
         _this.$router.push("/login")
       })
+    },
+    // 关闭编辑页面
+    handleClose(done) {
+      this.$confirm('确认关闭？')
+          .then(_ => {
+            done();
+          })
+          .catch(_ => {});
     }
   },
   // 回显用户信息
@@ -59,14 +112,5 @@ export default {
 </script>
 
 <style scoped>
-  .m-content {
-    max-width: 960px;
-    margin: 0 auto;
-    text-align: center;
-  }
-
-  .m-action {
-    margin: 10px 0;
-  }
 
 </style>

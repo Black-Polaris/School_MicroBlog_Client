@@ -4,6 +4,7 @@ import Login from "@/views/Login";
 import Blogs from "@/views/Blogs";
 import BlogEdit from "@/views/BlogEdit";
 import BlogDetail from "@/views/BlogDetail";
+import Blog from "@/views/Blog";
 
 Vue.use(VueRouter)
 
