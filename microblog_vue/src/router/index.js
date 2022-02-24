@@ -16,14 +16,9 @@ const routes = [
     redirect: {name: "Blogs"}
   },
   {
-    path: '/indexBlogs',
+    path: '/blogs',
     name: 'IndexBlogs',
     component: IndexBlogs
-  },
-  {
-    path: '/blogs',
-    name: 'Blogs',
-    component: Blogs
   },
   {
     path: '/login',

@@ -19,7 +19,7 @@
             </el-col>
             <!--        热搜榜和好友推荐-->
             <el-col :span="6">
-              <div>热搜榜</div>
+              <HotSearch></HotSearch>
             </el-col>
           </el-row>
         </el-main>
@@ -33,22 +33,27 @@ import Header from "@/components/Header";
 import AsideMenu from "@/components/AsideMenu";
 import Blogs from "@/views/Blogs";
 import BlogDetail from "@/views/BlogDetail";
+import MyBlog from "@/views/MyBlog";
+import LatestBlog from "@/views/LatestBlog";
+import HotSearch from "@/components/HotSearch";
+import HeaderTabs from "@/components/HeaderTabs";
+import HotSearchList from "@/views/HotSearchList";
 export default {
   name: "IndexBlogs",
-  components: {BlogDetail, Blogs, Header, AsideMenu},
+  components: {HotSearchList, HeaderTabs, HotSearch, LatestBlog,MyBlog,BlogDetail, Blogs, Header, AsideMenu},
   data() {
     return {
-      comp: 'Blogs',
+      comp: 'HeaderTabs',
     }
   },
 
   methods: {
     typeChange() {
       const value = this.$refs.asideMenu.typeId
-      if (value === '0')  this.comp = 'Blogs'
-      if (value === '1') this.comp = 'BlogDetail'
-      if (value === '2') this.comp = 'Blogs'
-      if (value === '3') this.comp = 'BlogDetail'
+      if (value === '0')  this.comp = 'HeaderTabs'
+      if (value === '1') this.comp = 'LatestBlog'
+      if (value === '2') this.comp = 'MyBlog'
+      if (value === '3') this.comp = 'HotSearchList'
     }
   }
 

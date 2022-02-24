@@ -1,5 +1,6 @@
 <template>
   <div>
+    我的
     <div class="infinite-list-wrapper">
       <div
           class="list"
@@ -80,9 +81,8 @@
 
 <script>
 
-
 export default {
-  name: "Blogs",
+  name: "MyBlog",
   data () {
     return {
       blogs: [],
@@ -135,7 +135,7 @@ export default {
 .infinite-list-wrapper {
   width: 100%;
 
-  height: 790px;
+  height: 810px;
   overflow: auto;
   box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)
 }
