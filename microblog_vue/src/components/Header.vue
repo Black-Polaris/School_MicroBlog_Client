@@ -30,7 +30,9 @@
             style="width: 200px;margin-right: 10px"
             v-model="searchWords">
         </el-input>
-        <el-button size="small" type="primary" icon="el-icon-search" @click="searchClick">搜索</el-button>
+        <router-link :to="{name: 'SearchBlog', params: {searchWords: searchWords}}">
+          <el-button size="small" type="primary" icon="el-icon-search" >搜索</el-button>
+        </router-link>
       </div>
     </el-menu>
 
@@ -54,7 +56,7 @@ export default {
     return {
       navList:[
         {name:'/blogs',navItem:'首页'},
-        {name:'/login',navItem: '热门微博'},
+        {name:'/login',navItem: '私信'},
         {name:'/Mine',navItem: '个人中心'}
       ],
 

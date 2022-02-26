@@ -75,7 +75,7 @@ export default {
       this.dialogVisible = true;
     },
     handleExceed(files, fileList) {
-      this.$message.warning(`最多只能上传9张图片，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+      this.$message.warning(`最多只能上传9张图片`);
     },
     beforeUpload(file) {
       const isJPG = file.type === 'image/jpeg';
