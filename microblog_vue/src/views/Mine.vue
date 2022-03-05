@@ -9,7 +9,9 @@
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
               <div class="block" style="text-align: center"><el-avatar :size="50" v-bind:src="URL + avatarUrl"></el-avatar></div>
 
-              <el-button size="small" type="primary" @click="dialogOfUpload=true">点击上传</el-button>
+              <div class="block" style="text-align: center; margin: 10px" >
+                <el-button size="small" type="primary" @click="dialogOfUpload=true">点击上传头像</el-button>
+              </div>
 
               <!-- 上传对话框 -->
               <el-dialog title="上传" :visible.sync="dialogOfUpload" width="35%" style="text-align: center;">
@@ -23,9 +25,11 @@
                   <el-button type="primary" @click="confirmUpload()">上 传</el-button>
                 </div>
               </el-dialog>
-
               <el-form-item label="用户名" prop="username">
                 <el-input v-model="ruleForm.username"></el-input>
+              </el-form-item>
+              <el-form-item label="昵称" prop="nickname">
+                <el-input v-model="ruleForm.nickname"></el-input>
               </el-form-item>
               <el-form-item label="简介" prop="description">
                 <el-input v-model="ruleForm.description"></el-input>
@@ -39,7 +43,7 @@
               <el-form-item label="生日" >
                 <el-col :span="11">
                   <el-form-item prop="date1">
-                    <el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.birthDate" style="width: 100%;"></el-date-picker>
+                    <el-date-picker type="date" value-format="yyyy-MM-dd" format="yyyy-MM-dd" placeholder="选择日期" v-model="ruleForm.birthDate" style="width: 100%;"></el-date-picker>
                   </el-form-item>
                 </el-col>
               </el-form-item>
@@ -125,6 +129,10 @@ export default {
           { required: true, message: '用户名不能为空', trigger: 'blur' },
           { min: 3, max: 15, message: '长度在 3 到 15 个字符', trigger: 'blur' }
         ],
+        nickname: [
+          { required: true, message: '昵称', trigger: 'blur' },
+          { min: 1, message: '长度最少为1个字符', trigger: 'blur' }
+        ],
         gender: [
           { required: true, message: '请选择一个性别', trigger: 'change' }
         ],
@@ -151,10 +159,26 @@ export default {
   },
 
   methods: {
+    // 修改个人信息
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('submit!');
+          this.$axios.post("/user/update", {
+            username: this.ruleForm.username,
+            nickname: this.ruleForm.nickname,
+            description: this.ruleForm.description,
+            gender: this.ruleForm.gender,
+            birthDate: this.ruleForm.birthDate
+          }, {
+            headers: {
+              "Authorization": localStorage.getItem("token")
+            }
+          }).then(res => {
+            const userInfo = res.data.data
+            this.$store.commit("SET_USERINFO", userInfo)
+            alert('submit!');
+          })
+
         } else {
           console.log('error submit!!');
           return false;
