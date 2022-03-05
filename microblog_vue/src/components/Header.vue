@@ -17,7 +17,7 @@
       <span v-show="hasLogin"><el-button class="el-icon-switch-button" type="danger" round style="float:right;margin: 10px" @click="logout">退出</el-button></span>
 <!--      发表微博和头像-->
       <el-button type="primary" icon="el-icon-edit" round style="float:right;margin: 10px;" @click="dialogVisible = true">发表微博</el-button>
-      <el-avatar :size="40" :src="user.avatar" style="float:right;margin: 10px;"></el-avatar>
+      <el-avatar :size="40" :src="URL + user.avatar" style="float:right;margin: 10px;"></el-avatar>
 
 <!--      微博搜索栏-->
       <div style="text-align: center;margin: 15px">
@@ -52,6 +52,7 @@ import BlogEdit from "@/views/BlogEdit";
 export default {
   name: "Header",
   components: {BlogEdit},
+  inject: ['reload'],
   data() {
     return {
       navList:[
@@ -62,10 +63,10 @@ export default {
 
       // 查找内容
       searchWords: '',
-
+      URL: "http://localhost:8083/image/",
       user: {
         username: '请先登录',
-        avatar:"https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"
+        avatar:""
       },
       hasLogin: false,
       dialogVisible: false
@@ -104,8 +105,7 @@ export default {
   created() {
     if (this.$store.getters.getUser.username) {
       this.user.username = this.$store.getters.getUser.username
-      this.user.avatar = this.$store.getters.getUser.avatar
-
+      this.user.avatar = this.$store.getters.getUser.avatar.avatarUrl
       this.hasLogin = true
     }
   }

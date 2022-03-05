@@ -7,9 +7,25 @@
         <el-main>
           <div class="main">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-              <div class="block" style="text-align: center"><el-avatar :size="50" :src="circleUrl"></el-avatar></div>
-              <el-form-item label="用户名" prop="name">
-                <el-input v-model="ruleForm.name"></el-input>
+              <div class="block" style="text-align: center"><el-avatar :size="50" v-bind:src="URL + avatarUrl"></el-avatar></div>
+
+              <el-button size="small" type="primary" @click="dialogOfUpload=true">点击上传</el-button>
+
+              <!-- 上传对话框 -->
+              <el-dialog title="上传" :visible.sync="dialogOfUpload" width="35%" style="text-align: center;">
+                <el-upload class="upload-demo" action="#" drag multiple :auto-upload="false"
+                           :file-list="fileList" :on-change="fileChange">
+                  <i class="el-icon-upload"></i>
+                  <div class="el-upload__text">将图片拖到此处，或<em>点击上传</em></div>
+                </el-upload>
+                <div slot="footer" class="dialog-footer">
+                  <el-button @click="dialogOfUpload = false">取 消</el-button>
+                  <el-button type="primary" @click="confirmUpload()">上 传</el-button>
+                </div>
+              </el-dialog>
+
+              <el-form-item label="用户名" prop="username">
+                <el-input v-model="ruleForm.username"></el-input>
               </el-form-item>
               <el-form-item label="简介" prop="description">
                 <el-input v-model="ruleForm.description"></el-input>
@@ -23,7 +39,7 @@
               <el-form-item label="生日" >
                 <el-col :span="11">
                   <el-form-item prop="date1">
-                    <el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.birth" style="width: 100%;"></el-date-picker>
+                    <el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.birthDate" style="width: 100%;"></el-date-picker>
                   </el-form-item>
                 </el-col>
               </el-form-item>
@@ -64,6 +80,7 @@ import Header from "@/components/Header";
 export default {
   name: "Mine",
   components: {Header},
+  inject: ['reload'],
   data() {
     const validatePass = (rule, value, callback) => {
       if (value === '') {
@@ -86,20 +103,25 @@ export default {
     };
 
     return {
-      circleUrl: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
+      dialogOfUpload: false,
+      URL: "http://localhost:8083/image/",
+
+      avatarUrl: '',
+      fileList: [],
       dialogVisible: false,
       ruleForm: {
-        name: '',
+        username: '',
+        nickname: '',
         description: '',
         gender: '',
-        birth: ''
+        birthDate: ''
       },
       passRuleForm: {
         pass: '',
         checkPass: ''
       },
       rules: {
-        name: [
+        username: [
           { required: true, message: '用户名不能为空', trigger: 'blur' },
           { min: 3, max: 15, message: '长度在 3 到 15 个字符', trigger: 'blur' }
         ],
@@ -116,6 +138,18 @@ export default {
       }
     };
   },
+
+  created() {
+    if (this.$store.getters.getUser) {
+      this.avatarUrl = this.$store.getters.getUser.avatar.avatarUrl
+      this.ruleForm.username = this.$store.getters.getUser.username
+      this.ruleForm.nickname = this.$store.getters.getUser.nickname
+      this.ruleForm.description = this.$store.getters.getUser.description
+      this.ruleForm.gender = this.$store.getters.getUser.gender
+      this.ruleForm.birthDate = this.$store.getters.getUser.birthDate
+    }
+  },
+
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
@@ -147,6 +181,37 @@ export default {
     },
     resetPassForm(formName) {
       this.$refs[formName].resetFields();
+    },
+    fileChange(file, fileList) {
+      this.fileList = fileList;
+    },
+    confirmUpload() {
+      const fd = new FormData();
+      this.fileList.forEach(
+          (val, index) => {
+            fd.append("file", val.raw);
+          }
+      );
+      this.$axios.post("/avatar/uploadAvatar", fd, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            "Authorization": localStorage.getItem("token")
+          }
+        }).then(res => {
+            this.avatarUrl = res.data.data.avatarUrl
+            const tempUserInfo = JSON.parse(sessionStorage.getItem("userInfo"))
+            let pojo = tempUserInfo
+            pojo.avatar = res.data.data
+            this.$store.getters.getUser.avatar.avatarUrl = this.avatarUrl
+            sessionStorage.setItem("userInfo", JSON.stringify(pojo))
+            this.reload()
+            console.log(this.avatarUrl)
+            this.dialogOfUpload = false;
+            this.$message({
+              message: "上传成功！",
+              duration: 1000
+            });
+        });
     }
   }
 }
