@@ -49,7 +49,7 @@
               </el-form-item>
 
               <el-form-item>
-                <el-button type="primary" @click="submitForm('ruleForm')">立即修改</el-button>
+                <el-button type="primary" @click="submitForm('ruleForm')">保存个人资料</el-button>
                 <el-button @click="dialogVisible = true">修改密码</el-button>
               </el-form-item>
             </el-form>
@@ -193,10 +193,22 @@ export default {
           })
           .catch(_ => {});
     },
+    // 修改密码
     submitPassForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('submit!');
+          this.$axios.post("/user/changePass", {
+            password: this.passRuleForm.pass
+          },{
+            headers: {
+              "Authorization": localStorage.getItem("token")
+            }
+          }).then(res => {
+            const userInfo = res.data.data
+            this.$store.commit("SET_USERINFO", userInfo)
+            this.dialogVisible = false
+            alert('submit!');
+          })
         } else {
           console.log('error submit!!');
           return false;
