@@ -1,6 +1,5 @@
 <template>
   <div>
-    最新的
     <div class="infinite-list-wrapper">
       <div
           class="list"
@@ -9,37 +8,34 @@
         <!--        微博卡片-->
         <el-card shadow="hover" style=" margin-bottom: 10px" v-for="blog in blogs" class="list-item" >
           <el-row :gutter="10">
-            <el-col :span="2"><div class="grid-content bg-purple"><el-avatar icon="el-icon-user-solid"></el-avatar></div></el-col>
-            <el-col :span="4"><div class="grid-content bg-purple">{{ blog.userId }}</div></el-col>
-            <el-col :span="4" :offset="14"><div class="grid-content bg-purple">{{ blog.updateDate }}</div></el-col>
+            <el-col :span="2">
+              <div>
+                <el-avatar :src="avatarURL + blog.user.avatar.avatarUrl"></el-avatar>
+              </div>
+            </el-col>
+            <el-col :span="4"><div style="font-weight: bold; text-align: left; margin-left: 5px;">{{ blog.user.nickname }}</div></el-col>
+            <el-col :span="4" :offset="14"><div style="font-size: 10px">{{ blog.createDate }}</div></el-col>
           </el-row>
           <!--            微博内容-->
           <el-row type="flex" >
-            <el-col :span="2"><div class="grid-content bg-purple"></div></el-col>
+            <el-col :span="2"><div></div></el-col>
             <el-col :span="22">
-              <div style="margin-left: 10px">
-                <h4>
-                  <router-link :to="{name: 'BlogDetail', params: {blogId: blog.id}}">
-                    {{ blog.id }}
-                  </router-link>
-                </h4>
-                <p>{{ blog.content}}</p>
-              </div>
+              <p style="margin-left: 10px;text-align: left;font-family: 'Microsoft YaHei'">{{ blog.content}}</p>
             </el-col>
           </el-row>
 
           <!--            九宫格图片-->
-          <div>
+          <div style="margin: 5px">
             <el-row  type="flex" >
-              <el-col :span="2"><div class="grid-content bg-purple"></div></el-col>
-              <el-col :span="21" :offset="1">
+              <el-col :span="2"></el-col>
+              <el-col :span="21">
                 <div>
-                  <el-row type="flex" v-for="i in srcList.length + 1 ">
-                    <el-col :span="7" v-for="i in srcList.length + 1 ">
+                  <el-row style="height: 100px;margin: 5px"  type="flex" v-for="i in ((blog.pictures.length)%3 == 0 ? (blog.pictures.length)/3 : (blog.pictures.length)/3 + 1) ">
+                    <el-col style="width: 100px;margin: 5px" :span="7" v-for="j in ((blog.pictures.length - 3*(i-1)) > 3 ? 3 : (blog.pictures.length - 3*(i-1))) ">
                       <el-image
                           style="width: 100px; height: 100px; border-radius: 5px"
-                          :src="url"
-                          :preview-src-list="srcList">
+                          :src="pictureURL + blog.pictures[(i-1)*3+j-1]"
+                          :preview-src-list="getPictureList(i,j,blog.pictures)">
                       </el-image>
                     </el-col>
                   </el-row>
@@ -49,28 +45,30 @@
           </div>
 
           <!--            转发、评论、点赞功能-->
-          <el-row type="flex" >
-            <el-col :span="2"><div class="grid-content bg-purple"></div></el-col>
-            <el-col :span="22">
-              <el-row  type="flex" justify="space-around">
-                <el-col :span="6"><div class="grid-content bg-purple">
-                  <el-badge :value="12" class="item">
-                    <el-button size="small">转发</el-button>
-                  </el-badge>
-                </div></el-col>
-                <el-col :span="6"><div class="grid-content bg-purple-light">
-                  <el-badge :value="12" class="item">
-                    <el-button size="small">评论</el-button>
-                  </el-badge>
-                </div></el-col>
-                <el-col :span="6"><div class="grid-content bg-purple">
-                  <el-badge :value="12" class="item">
-                    <el-button size="small">点赞</el-button>
-                  </el-badge>
-                </div></el-col>
-              </el-row>
-            </el-col>
-          </el-row>
+          <div style="margin-top: 15px">
+            <el-row type="flex">
+              <el-col :span="2"><div ></div></el-col>
+              <el-col :span="21">
+                <el-row  type="flex" justify="space-around">
+                  <el-col :span="7"><div>
+                    <el-badge :value="blog.relay" class="item" style="width: 100%">
+                      <el-button style="width: 100%" type="primary">转发</el-button>
+                    </el-badge>
+                  </div></el-col>
+                  <el-col :span="7"><div>
+                    <el-badge :value="blog.comment" class="item" style="width: 100%">
+                      <el-button style="width: 100%">评论</el-button>
+                    </el-badge>
+                  </div></el-col>
+                  <el-col :span="7"><div>
+                    <el-badge :value="blog.love" class="item" style="width: 100%">
+                      <el-button style="width: 100%" type="success">点赞</el-button>
+                    </el-badge>
+                  </div></el-col>
+                </el-row>
+              </el-col>
+            </el-row>
+          </div>
         </el-card>
       </div>
       <p v-if="loading">加载中...</p>
@@ -81,22 +79,19 @@
 
 <script>
 
+
 export default {
   name: "LatestBlog",
   data () {
     return {
+      avatarURL: this.$store.state.avatarURL,
+      pictureURL: this.$store.state.pictureURL,
       blogs: [],
       currentPage: 1,
       total: 100,
       sum: 0,
       loading: false,
 
-      // 九宫格
-      url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
-      srcList: [
-        'https://fuss10.elemecdn.com/8/27/f01c15bb73e1ef3793e64e6b7bbccjpeg.jpeg',
-        'https://fuss10.elemecdn.com/1/8e/aeffeb4de74e2fde4bd74fc7b4486jpeg.jpeg'
-      ]
     }
   },
   computed: {
@@ -114,7 +109,7 @@ export default {
         const _this = this
         const currentPage = _this.currentPage
         console.log("-----------*" + _this.blogs)
-        _this.$axios.get("/blogs?currentPage=" + currentPage)
+        _this.$axios.get("/blog/blogs?currentPage=" + currentPage)
             .then(res => {
 
               _this.blogs = _this.blogs.concat(res.data.data.records)
@@ -126,6 +121,15 @@ export default {
             })
         this.loading = false
       }, 500)
+    },
+    // 预览点击的图片
+    getPictureList(i, j, pictures) {
+      const temp = []
+      pictures.forEach(picture => {
+        temp.push(this.pictureURL + picture)
+      })
+      return temp.slice((i-1)*3+j-1).concat(temp.slice(0,(i-1)*3+j-1))
+
     }
   }
 }
@@ -135,7 +139,7 @@ export default {
 .infinite-list-wrapper {
   width: 100%;
 
-  height: 810px;
+  height: 790px;
   overflow: auto;
   box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)
 }

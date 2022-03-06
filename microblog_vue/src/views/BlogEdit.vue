@@ -40,7 +40,7 @@
             </el-upload>
 
             <el-dialog :visible.sync="dialogVisible">
-              <img width="100%" :src="dialogImageUrl" alt="">
+              <img width="100%" :src="dialogavatarURL" alt="">
             </el-dialog>
           </div>
       </el-row>
@@ -59,7 +59,7 @@ export default {
       textarea: "",
 
       // 上传图片
-      dialogImageUrl: '',
+      dialogavatarURL: '',
       dialogVisible: false
     }
   },
@@ -71,7 +71,7 @@ export default {
       console.log(file, fileList);
     },
     handlePictureCardPreview(file) {
-      this.dialogImageUrl = file.url;
+      this.dialogavatarURL = file.url;
       this.dialogVisible = true;
     },
     handleExceed(files, fileList) {

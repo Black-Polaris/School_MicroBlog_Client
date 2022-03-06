@@ -5,6 +5,8 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    avatarURL: 'http://localhost:8083/avatar/',
+    pictureURL: 'http://localhost:8083/picture/',
     // 实现登录后其他模块也可以获取当前用户的信息，例如权限
     token: '',
     userInfo: JSON.parse(sessionStorage.getItem("userInfo"))

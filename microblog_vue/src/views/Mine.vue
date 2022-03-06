@@ -7,7 +7,7 @@
         <el-main>
           <div class="main">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-              <div class="block" style="text-align: center"><el-avatar :size="50" v-bind:src="URL + avatarUrl"></el-avatar></div>
+              <div class="block" style="text-align: center"><el-avatar :size="50" v-bind:src="avatarURL + avatarUrl"></el-avatar></div>
 
               <div class="block" style="text-align: center; margin: 10px" >
                 <el-button size="small" type="primary" @click="dialogOfUpload=true">点击上传头像</el-button>
@@ -108,7 +108,7 @@ export default {
 
     return {
       dialogOfUpload: false,
-      URL: "http://localhost:8083/image/",
+      avatarURL: this.$store.state.avatarURL,
 
       avatarUrl: '',
       fileList: [],

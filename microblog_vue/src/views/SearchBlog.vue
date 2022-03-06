@@ -133,7 +133,7 @@ export default {
         const _this = this
         const currentPage = _this.currentPage
         console.log("-----------*" + _this.blogs)
-        _this.$axios.get("/blogs?currentPage=" + currentPage)
+        _this.$axios.get("/blog/blogs?currentPage=" + currentPage)
             .then(res => {
 
               _this.blogs = _this.blogs.concat(res.data.data.records)
