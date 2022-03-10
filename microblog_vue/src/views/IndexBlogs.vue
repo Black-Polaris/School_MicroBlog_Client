@@ -14,7 +14,7 @@
             <!--        微博列表-->
             <el-col :span="18">
               <keep-alive>
-                <component :is="comp" v-show="true"></component>
+                <component :is="comp" :key="componentKey" v-show="true"></component>
               </keep-alive>
             </el-col>
             <!--        热搜榜和好友推荐-->
@@ -44,16 +44,30 @@ export default {
   data() {
     return {
       comp: 'HeaderTabs',
+      componentKey: 0
     }
   },
 
   methods: {
     typeChange() {
       const value = this.$refs.asideMenu.typeId
-      if (value === '0')  this.comp = 'HeaderTabs'
-      if (value === '1') this.comp = 'LatestBlog'
-      if (value === '2') this.comp = 'MyBlog'
-      if (value === '3') this.comp = 'HotSearchList'
+      if (value === '0') {
+        this.comp = 'HeaderTabs'
+        this.componentKey += 1
+      }
+
+      if (value === '1') {
+        this.comp = 'LatestBlog'
+        this.componentKey += 1
+      }
+      if (value === '2') {
+        this.comp = 'MyBlog'
+        this.componentKey += 1
+      }
+      if (value === '3') {
+        this.comp = 'HotSearchList'
+        this.componentKey += 1
+      }
     }
   }
 
