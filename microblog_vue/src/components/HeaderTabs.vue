@@ -1,9 +1,9 @@
 <template>
   <el-tabs v-model="activeName" @tab-click="handleClick" style="margin: 0 auto;width: 95%;height: 850px">
-    <el-tab-pane label="小时榜" name="first"><Blogs v-if="isChildUpdate1"></Blogs></el-tab-pane>
-    <el-tab-pane label="日榜" name="second"><Blogs v-if="isChildUpdate2"></Blogs></el-tab-pane>
-    <el-tab-pane label="周榜" name="third"><Blogs v-if="isChildUpdate3"></Blogs></el-tab-pane>
-    <el-tab-pane label="月榜" name="fourth"><Blogs v-if="isChildUpdate4"></Blogs></el-tab-pane>
+    <el-tab-pane label="小时榜" name="first"><Blogs message="getHour" v-if="isChildUpdate1"></Blogs></el-tab-pane>
+    <el-tab-pane label="日榜" name="second"><Blogs message="getDay" v-if="isChildUpdate2"></Blogs></el-tab-pane>
+    <el-tab-pane label="周榜" name="third"><Blogs message="getWeek" v-if="isChildUpdate3"></Blogs></el-tab-pane>
+    <el-tab-pane label="月榜" name="fourth"><Blogs message="getMonth" v-if="isChildUpdate4"></Blogs></el-tab-pane>
   </el-tabs>
 </template>
 

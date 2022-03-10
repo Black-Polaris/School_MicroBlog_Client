@@ -84,6 +84,7 @@ import {formatDate} from "_element-ui@2.15.6@element-ui/src/utils/date-util";
 
 export default {
   name: "Blogs",
+  props: ['message'],
   data () {
     return {
       avatarURL: this.$store.state.avatarURL,
@@ -110,8 +111,9 @@ export default {
       setTimeout(() => {
         const _this = this
         const currentPage = _this.currentPage
+        const message = _this.message
         console.log("-----------*" + _this.blogs)
-        _this.$axios.get("/blog/getHour?currentPage=" + currentPage,  {
+        _this.$axios.get("/blog/" + message +"?currentPage=" + currentPage,  {
           headers: {
             "Authorization": localStorage.getItem("token")
           }
