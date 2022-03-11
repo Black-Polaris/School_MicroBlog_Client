@@ -4,12 +4,14 @@
     <div>
       <el-input
           v-model="textarea"
+          placeholder="请输入内容"
           class="chatText"
           resize="none"
           type="textarea"
           id='textarea'
+          maxlength="255"
+          show-word-limit
           rows="5"
-          @keyup.enter.native="sendInfo"
       ></el-input>
     </div>
     <div >
@@ -18,7 +20,7 @@
           <Emoji></Emoji>
         </el-col>
         <el-col :offset="20">
-          <el-button style="margin-top: 5px" type="primary">发布</el-button>
+          <el-button style="margin-top: 5px" type="primary" @click="publishBlog()">发布</el-button>
         </el-col>
       </el-row>
 <!--      上传图片-->
@@ -29,8 +31,10 @@
                 :auto-upload="false"
                 class="upload-demo"
                 list-type="picture-card"
+                :file-list="fileList"
                 :on-preview="handlePictureCardPreview"
                 :on-remove="handleRemove"
+                :on-change="fileChange"
                 :before-upload="beforeUpload"
                 :before-remove="beforeRemove"
                 multiple
@@ -39,8 +43,8 @@
               <el-button size="small" type="primary">点击上传jpeg图片</el-button>
             </el-upload>
 
-            <el-dialog :visible.sync="dialogVisible">
-              <img width="100%" :src="dialogavatarURL" alt="">
+            <el-dialog :visible.sync="dialogVisible" append-to-body="true">
+              <img width="100%" :src="dialogAvatarURL" alt="">
             </el-dialog>
           </div>
       </el-row>
@@ -56,10 +60,10 @@ export default {
   components: {Emoji},
   data () {
     return {
-      textarea: "",
-
+      textarea: '',
+      fileList: [],
       // 上传图片
-      dialogavatarURL: '',
+      dialogAvatarURL: '',
       dialogVisible: false
     }
   },
@@ -67,11 +71,48 @@ export default {
 
   },
   methods: {
+    brightenKeyWord(content, keyword) {
+
+    },
+    fileChange(file, fileList) {
+      this.fileList = fileList;
+    },
+    publishBlog() {
+      const formData = new FormData();
+      this.fileList.forEach(
+          (val, index) => {
+            formData.append("files", val.raw);
+          }
+      );
+      const text = this.textarea.replace(/\r\n/g, '<br/>').replace(/\n/g, '<br/>').replace(/\s/g, ' ')
+      formData.append('textarea', text)
+      this.$axios.post("blog/addBlog", formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          "Authorization": localStorage.getItem("token")
+        }
+      }).then(res => {
+        console.log(res.data.data)
+        this.textarea = ''
+        this.fileList = []
+
+        this.$notify({
+          title: '成功',
+          message: '发布成功',
+          type: 'success'
+        });
+      }).catch(error => {
+        this.$notify.error({
+          title: '错误',
+          message: '发布失败' + error
+        });
+      });
+    },
     handleRemove(file, fileList) {
       console.log(file, fileList);
     },
     handlePictureCardPreview(file) {
-      this.dialogavatarURL = file.url;
+      this.dialogAvatarURL = file.url;
       this.dialogVisible = true;
     },
     handleExceed(files, fileList) {

@@ -20,7 +20,7 @@
           <el-row type="flex" >
             <el-col :span="2"><div></div></el-col>
             <el-col :span="22">
-              <p style="margin-left: 10px;text-align: left;font-family: 'Microsoft YaHei'">{{ blog.content}}</p>
+              <p style="margin-left: 10px;text-align: left;font-family: 'Microsoft YaHei'" v-html="blog.content"></p>
             </el-col>
           </el-row>
 
