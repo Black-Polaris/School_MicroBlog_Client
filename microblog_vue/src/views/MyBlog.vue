@@ -14,7 +14,7 @@
               </div>
             </el-col>
             <el-col :span="4"><div style="font-weight: bold; text-align: left; margin-left: 5px;">{{ blog.user.nickname }}</div></el-col>
-            <el-col :span="4" :offset="14"><div style="font-size: 10px">{{ blog.createDate }}</div></el-col>
+            <el-col :span="4" :offset="14"><div style="font-size: 10px" dataformatas="yyyy-MM-dd HH:mm:ss">{{ blog.createDate }}</div></el-col>
           </el-row>
           <!--            微博内容-->
           <el-row type="flex" >
@@ -51,8 +51,8 @@
               <el-col :span="21">
                 <el-row  type="flex" justify="space-around">
                   <el-col :span="7"><div>
-                    <el-badge :value="blog.relay" class="item" style="width: 100%">
-                      <el-button style="width: 100%" type="primary">转发</el-button>
+                    <el-badge :value="blog.relay.relaySize" class="item" style="width: 100%">
+                      <el-button style="width: 100%" :type="blog.love.isRelay?'success':''">{{ blog.love.isRelay?'已转发':'转发' }}</el-button>
                     </el-badge>
                   </div></el-col>
                   <el-col :span="7"><div>
@@ -61,8 +61,8 @@
                     </el-badge>
                   </div></el-col>
                   <el-col :span="7"><div>
-                    <el-badge :value="blog.love" class="item" style="width: 100%">
-                      <el-button style="width: 100%" type="success">点赞</el-button>
+                    <el-badge :value="blog.love.loveSize" class="item" style="width: 100%">
+                      <el-button style="width: 100%" @click="doLike(blog)" :type="blog.love.isLove?'success':''"> {{ blog.love.isLove?'已点赞':'点赞' }} </el-button>
                     </el-badge>
                   </div></el-col>
                 </el-row>
@@ -80,6 +80,8 @@
 <script>
 
 
+import {formatDate} from "_element-ui@2.15.6@element-ui/src/utils/date-util";
+
 export default {
   name: "MyBlog",
   data () {
@@ -89,14 +91,14 @@ export default {
       blogs: [],
       currentPage: 1,
       total: 100,
-      sum: 0,
+      sum: -1,
       loading: false,
 
     }
   },
   computed: {
     noMore () {
-      return this.sum > this.total;
+      return this.sum === 0
     },
     disabled () {
       return this.loading || this.noMore
@@ -109,18 +111,20 @@ export default {
         const _this = this
         const currentPage = _this.currentPage
         console.log("-----------*" + _this.blogs)
-        _this.$axios.get("/blog/myBlogs?currentPage=" + currentPage, {
+        _this.$axios.get("/blog/myBlogs?currentPage=" + currentPage,  {
           headers: {
             "Authorization": localStorage.getItem("token")
           }
+        }).then(res => {
+          if (res.data.data.length != 0) {
+            _this.blogs = _this.blogs.concat(res.data.data)
+          }
+          // _this.blogs = res.data.data.records
+          _this.currentPage = ++_this.currentPage
+          _this.total = _this.blogs.length
+          _this.sum = res.data.data.length
+          console.log("*********"+_this.currentPage+"------" + _this.total +"----" + _this.sum)
         })
-            .then(res => {
-              _this.blogs = _this.blogs.concat(res.data.data.records)
-              _this.currentPage = res.data.data.current + 1
-              _this.total = res.data.data.total
-              _this.sum += res.data.data.size
-              console.log("*********" + _this.blogs)
-            })
         this.loading = false
       }, 500)
     },
@@ -131,8 +135,34 @@ export default {
         temp.push(this.pictureURL + picture)
       })
       return temp.slice((i-1)*3+j-1).concat(temp.slice(0,(i-1)*3+j-1))
-
+    },
+    // 点赞
+    doLike(blog) {
+      console.log(blog.id)
+      blog.createDate = formatDate(blog.createDate,"yyyy-MM-dd HH:mm:ss")
+      if (!blog.love.isLove) {
+        this.$axios.post("/love/doLove", blog, {
+          headers: {
+            "Authorization": localStorage.getItem("token")
+          }
+        }).then(res => {
+              blog.love.loveSize += 1
+              blog.love.isLove = true
+            }
+        )
+      } else {
+        this.$axios.post("/love/unLove", blog, {
+          headers: {
+            "Authorization": localStorage.getItem("token")
+          }
+        }).then(res => {
+              blog.love.loveSize -= 1
+              blog.love.isLove = false
+            }
+        )
+      }
     }
+
   }
 }
 </script>

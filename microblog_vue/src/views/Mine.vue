@@ -15,8 +15,11 @@
 
               <!-- 上传对话框 -->
               <el-dialog title="上传" :visible.sync="dialogOfUpload" width="35%" style="text-align: center;">
-                <el-upload class="upload-demo" action="#" drag multiple :auto-upload="false"
-                           :file-list="fileList" :on-change="fileChange">
+                <el-upload class="upload-demo" action="#"
+                           drag multiple="false"
+                           :auto-upload="false"
+                           :file-list="fileList" limit="1"
+                           :on-change="fileChange">
                   <i class="el-icon-upload"></i>
                   <div class="el-upload__text">将图片拖到此处，或<em>点击上传</em></div>
                 </el-upload>
@@ -176,11 +179,22 @@ export default {
           }).then(res => {
             const userInfo = res.data.data
             this.$store.commit("SET_USERINFO", userInfo)
-            alert('submit!');
+            this.$notify({
+              title: '成功',
+              message: '修改成功',
+              type: 'success'
+            });
+          }).catch(error => {
+            this.$notify.error({
+              title: '错误',
+              message: '修改失败' + error
+            });
           })
-
         } else {
-          console.log('error submit!!');
+          this.$notify.error({
+            title: '错误',
+            message: '修改失败'
+          });
           return false;
         }
       });
@@ -207,10 +221,17 @@ export default {
             const userInfo = res.data.data
             this.$store.commit("SET_USERINFO", userInfo)
             this.dialogVisible = false
-            alert('submit!');
+            this.$notify({
+              title: '成功',
+              message: '修改成功',
+              type: 'success'
+            });
           })
         } else {
-          console.log('error submit!!');
+          this.$notify.error({
+            title: '错误',
+            message: '修改失败'
+          });
           return false;
         }
       });
@@ -243,11 +264,17 @@ export default {
             this.reload()
             console.log(this.avatarUrl)
             this.dialogOfUpload = false;
-            this.$message({
-              message: "上传成功！",
-              duration: 1000
+            this.$notify({
+              title: '成功',
+              message: '上传成功',
+              type: 'success'
             });
+        }).catch(error => {
+        this.$notify.error({
+          title: '错误',
+          message: '上传失败' + error
         });
+      });
     }
   }
 }
