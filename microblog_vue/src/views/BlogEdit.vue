@@ -67,9 +67,6 @@ export default {
       dialogVisible: false
     }
   },
-  computed: {
-
-  },
   methods: {
     brightenKeyWord(content, keyword) {
 
@@ -95,7 +92,7 @@ export default {
         console.log(res.data.data)
         this.textarea = ''
         this.fileList = []
-
+        this.$emit('closeBlogEdit')
         this.$notify({
           title: '成功',
           message: '发布成功',

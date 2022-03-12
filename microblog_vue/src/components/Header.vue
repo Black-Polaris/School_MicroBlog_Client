@@ -40,7 +40,7 @@
     <el-dialog
         :visible.sync="dialogVisible"
         :before-close="handleClose">
-     <BlogEdit></BlogEdit>
+     <BlogEdit @closeBlogEdit = "dialogVisible = false" ref="blogEdit"></BlogEdit>
     </el-dialog>
 
   </div>
@@ -99,7 +99,7 @@ export default {
             done();
           })
           .catch(_ => {});
-    }
+    },
   },
   // 回显用户信息
   created() {
