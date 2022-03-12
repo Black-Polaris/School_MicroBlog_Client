@@ -4,81 +4,194 @@
     <el-header><Header></Header></el-header>
     <!--    <BlogEdit></BlogEdit>-->
     <el-container>
-      <el-main style="padding: 3px;border-radius: 5px">
+      <el-main style="padding: 3px;margin: 3px;border-radius: 5px">
         <!--        main部分-->
         <el-row>
           <!--        微博列表-->
-          <el-col :span="18">
+          <el-col :span="18" class="infinite-list-wrapper">
             <div class="infinite-list-wrapper">
+<!--              查找的用戶-->
+              <div class="user-list"  v-show="users.length != 0" style="padding: 3px">
+                <el-row type="flex" v-for="i in (users.length%2 == 0 ? Math.floor(users.length/2) : Math.floor(users.length/2) +1)">
+                  <el-col style="width: 49%;margin: 5px" v-for="j in (users.length - 2*(i-1)) > 2 ? 2 : (users.length -2*(i-1))">
+                    <el-card shadow="hover" style="margin: 4px; margin-bottom: -3px;">
+                      <el-row :gutter="21">
+                        <el-col :span="2">
+                          <div>
+                            <el-avatar :src="avatarURL + users[(i-1)*2+j-1].avatar.avatarUrl"></el-avatar>
+                          </div>
+                        </el-col>
+                        <el-col :span="19" :offset="1">
+                          <el-row :span="6"><div style="font-weight: bold; text-align: left; margin-left: 5px;">{{ users[(i-1)*2+j-1].nickname }}</div></el-row>
+                          <el-row :span="6"><div style="font-size: 10px; text-align: left; margin-left: 5px;">简介：{{ users[(i-1)*2+j-1].description }}</div></el-row>
+                        </el-col>
+                      </el-row>
+                    </el-card>
+                  </el-col>
+                </el-row>
+              </div>
+
               <div
                   class="list"
                   v-infinite-scroll="load"
                   infinite-scroll-disabled="disabled">
                 <!--        微博卡片-->
                 <el-card shadow="hover" style=" margin-bottom: 10px" v-for="blog in blogs" class="list-item" >
-                  <el-row :gutter="10">
-                    <el-col :span="2"><div class="grid-content bg-purple"><el-avatar icon="el-icon-user-solid"></el-avatar></div></el-col>
-                    <el-col :span="4"><div class="grid-content bg-purple">{{ blog.userId }}</div></el-col>
-                    <el-col :span="4" :offset="14"><div class="grid-content bg-purple">{{ blog.updateDate }}</div></el-col>
-                  </el-row>
-                  <!--            微博内容-->
-                  <el-row type="flex" >
-                    <el-col :span="2"><div class="grid-content bg-purple"></div></el-col>
-                    <el-col :span="22">
-                      <div style="margin-left: 10px">
-                        <h4>
-                          <router-link :to="{name: 'BlogDetail', params: {blogId: blog.id}}">
-                            {{ blog.id }}
-                          </router-link>
-                        </h4>
-                        <p>{{ blog.content}}</p>
-                      </div>
-                    </el-col>
-                  </el-row>
-
-                  <!--            九宫格图片-->
-                  <div>
-                    <el-row  type="flex" >
-                      <el-col :span="2"><div class="grid-content bg-purple"></div></el-col>
-                      <el-col :span="21" :offset="1">
+                  <!--          原创状态微博-->
+                  <div v-show="blog.status == 1">
+                    <el-row :gutter="10">
+                      <el-col :span="2">
                         <div>
-                          <el-row type="flex" v-for="i in srcList.length + 1 ">
-                            <el-col :span="7" v-for="i in srcList.length + 1 ">
-                              <el-image
-                                  style="width: 100px; height: 100px; border-radius: 5px"
-                                  :src="url"
-                                  :preview-src-list="srcList">
-                              </el-image>
-                            </el-col>
-                          </el-row>
+                          <el-avatar :src="avatarURL + blog.user.avatar.avatarUrl"></el-avatar>
                         </div>
                       </el-col>
+                      <el-col :span="4"><div style="font-weight: bold; text-align: left; margin-left: 5px;">{{ blog.user.nickname }}</div></el-col>
+                      <el-col :span="4" :offset="14"><div style="font-size: 10px" dataformatas="yyyy-MM-dd HH:mm:ss">{{ blog.createDate }}</div></el-col>
                     </el-row>
-                  </div>
+                    <!--            微博内容-->
+                    <el-row type="flex" >
+                      <el-col :span="2"><div></div></el-col>
+                      <el-col :span="22">
+                        <p style="margin-left: 10px;text-align: left;font-family: 'Microsoft YaHei'" v-html="blog.content"></p>
+                      </el-col>
+                    </el-row>
 
-                  <!--            转发、评论、点赞功能-->
-                  <el-row type="flex" >
-                    <el-col :span="2"><div class="grid-content bg-purple"></div></el-col>
-                    <el-col :span="22">
-                      <el-row  type="flex" justify="space-around">
-                        <el-col :span="6"><div class="grid-content bg-purple">
-                          <el-badge :value="12" class="item">
-                            <el-button size="small">转发</el-button>
-                          </el-badge>
-                        </div></el-col>
-                        <el-col :span="6"><div class="grid-content bg-purple-light">
-                          <el-badge :value="12" class="item">
-                            <el-button size="small">评论</el-button>
-                          </el-badge>
-                        </div></el-col>
-                        <el-col :span="6"><div class="grid-content bg-purple">
-                          <el-badge :value="12" class="item">
-                            <el-button size="small">点赞</el-button>
-                          </el-badge>
-                        </div></el-col>
+                    <!--            九宫格图片-->
+                    <div style="margin: 5px">
+                      <el-row  type="flex" >
+                        <el-col :span="2"></el-col>
+                        <el-col :span="21">
+                          <div>
+                            <el-row style="height: 100px;margin: 5px"  type="flex" v-for="i in ((blog.pictures.length)%3 == 0 ? Math.floor((blog.pictures.length)/3) : Math.floor((blog.pictures.length)/3) + 1) ">
+                              <el-col style="width: 100px;margin: 5px" :span="7" v-for="j in ((blog.pictures.length - 3*(i-1)) > 3 ? 3 : (blog.pictures.length - 3*(i-1))) ">
+                                <el-image
+                                    style="width: 100px; height: 100px; border-radius: 5px"
+                                    :src="pictureURL + blog.pictures[(i-1)*3+j-1]"
+                                    :preview-src-list="getPictureList(i,j,blog.pictures)">
+                                </el-image>
+                              </el-col>
+                            </el-row>
+                          </div>
+                        </el-col>
                       </el-row>
-                    </el-col>
-                  </el-row>
+                    </div>
+
+                    <!--            转发、评论、点赞功能-->
+                    <div style="margin-top: 15px">
+                      <el-row type="flex">
+                        <el-col :span="2"><div ></div></el-col>
+                        <el-col :span="21">
+                          <el-row  type="flex" justify="space-around">
+                            <el-col :span="7"><div>
+                              <el-badge :value="blog.relay.relaySize" class="item" style="width: 100%">
+                                <el-button style="width: 100%" @click="doRelay(blog)" :type="blog.relay.isRelay?'success':''">{{ blog.relay.isRelay?'已转发':'转发' }}</el-button>
+                              </el-badge>
+                            </div></el-col>
+                            <el-col :span="7"><div>
+                              <el-badge :value="blog.comment" class="item" style="width: 100%">
+                                <el-button style="width: 100%">评论</el-button>
+                              </el-badge>
+                            </div></el-col>
+                            <el-col :span="7"><div>
+                              <el-badge :value="blog.love.loveSize" class="item" style="width: 100%">
+                                <el-button style="width: 100%" @click="doLike(blog)" :type="blog.love.isLove?'success':''"> {{ blog.love.isLove?'已点赞':'点赞' }} </el-button>
+                              </el-badge>
+                            </div></el-col>
+                          </el-row>
+                        </el-col>
+                      </el-row>
+                    </div>
+                  </div>
+                  <!--          转发状态微博-->
+                  <div v-show="blog.status == 2">
+                    <el-row :gutter="10">
+                      <el-col :span="2">
+                        <div>
+                          <el-avatar :src="avatarURL + blog.user.avatar.avatarUrl"></el-avatar>
+                        </div>
+                      </el-col>
+                      <el-col :span="4"><div style="font-weight: bold; text-align: left; margin-left: 5px;">{{ blog.user.nickname }}</div></el-col>
+                      <el-col :span="4" :offset="14"><div style="font-size: 10px" dataformatas="yyyy-MM-dd HH:mm:ss">{{ blog.createDate }}</div></el-col>
+                    </el-row>
+                    <!--            微博内容-->
+                    <div>
+                      <el-row type="flex" >
+                        <el-col :span="2"><div></div></el-col>
+                        <el-col :span="22">
+                          <p style="margin-left: 10px;text-align: left;font-weight: bold">转发微博</p>
+                        </el-col>
+                      </el-row>
+
+                      <el-row type="flex" >
+                        <el-col :span="2"><div></div></el-col>
+                        <el-col :span="22">
+                          <!--              转发微博内容-->
+                          <div style="border-radius: 5px;background-color: #f2f2f2;padding: 5px">
+                            <el-row :gutter="10">
+                              <el-col :span="2">
+                                <div>
+                                  <el-avatar :src="avatarURL + (blog.fromBlog == null ? null : blog.fromBlog.user.avatar.avatarUrl)"></el-avatar>
+                                </div>
+                              </el-col>
+                              <el-col :span="4"><div style="font-weight: bold; text-align: left; margin-left: 5px;">{{ blog.fromBlog == null ? null : blog.fromBlog.user.nickname }}</div></el-col>
+                              <el-col :span="4" :offset="14"><div style="font-size: 10px" dataformatas="yyyy-MM-dd HH:mm:ss">{{ blog.fromBlog == null ? null : blog.fromBlog.createDate }}</div></el-col>
+                            </el-row>
+
+                            <el-row type="flex" >
+                              <el-col :span="2"><div></div></el-col>
+                              <el-col :span="22">
+                                <p style="margin-left: 10px;text-align: left;font-family: 'Microsoft YaHei'" v-html="blog.fromBlog == null? null :blog.fromBlog.content"></p>
+                              </el-col>
+                            </el-row>
+                            <!--            九宫格图片-->
+                            <div style="margin: 5px">
+                              <el-row  type="flex" >
+                                <el-col :span="2"></el-col>
+                                <el-col :span="21">
+                                  <div>
+                                    <el-row style="height: 100px;margin: 5px"  type="flex" v-for="i in ((blog.fromBlog == null? 0 : blog.fromBlog.pictures.length)%3 == 0 ? Math.floor((blog.fromBlog == null? 0 : blog.fromBlog.pictures.length)/3) : Math.floor((blog.fromBlog == null? 0 : blog.fromBlog.pictures.length)/3) + 1) ">
+                                      <el-col style="width: 100px;margin: 5px" :span="7" v-for="j in ((blog.fromBlog == null? 0 : blog.fromBlog.pictures.length - 3*(i-1)) > 3 ? 3 : (blog.fromBlog == null? 0 : blog.fromBlog.pictures.length - 3*(i-1))) ">
+                                        <el-image
+                                            style="width: 100px; height: 100px; border-radius: 5px"
+                                            :src="pictureURL + (blog.fromBlog == null? blog.pictures : blog.fromBlog.pictures[(i-1)*3+j-1])"
+                                            :preview-src-list="getPictureList(i,j,blog.fromBlog == null? blog.pictures :blog.fromBlog.pictures)">
+                                        </el-image>
+                                      </el-col>
+                                    </el-row>
+                                  </div>
+                                </el-col>
+                              </el-row>
+                            </div>
+                          </div>
+                        </el-col>
+                      </el-row>
+                    </div>
+                    <!--            转发、评论、点赞功能-->
+                    <div style="margin-top: 15px">
+                      <el-row type="flex">
+                        <el-col :span="2"><div ></div></el-col>
+                        <el-col :span="21">
+                          <el-row  type="flex" justify="space-around">
+                            <el-col :span="7"><div>
+                              <el-badge :value="blog.relay.relaySize" class="item" style="width: 100%">
+                                <el-button style="width: 100%" @click="doRelay(blog)"  :type="blog.love.isRelay?'success':''">{{ blog.love.isRelay?'已转发':'转发' }}</el-button>
+                              </el-badge>
+                            </div></el-col>
+                            <el-col :span="7"><div>
+                              <el-badge :value="blog.comment" class="item" style="width: 100%">
+                                <el-button style="width: 100%">评论</el-button>
+                              </el-badge>
+                            </div></el-col>
+                            <el-col :span="7"><div>
+                              <el-badge :value="blog.love.loveSize" class="item" style="width: 100%">
+                                <el-button style="width: 100%" @click="doLike(blog)" :type="blog.love.isLove?'success':''"> {{ blog.love.isLove?'已点赞':'点赞' }} </el-button>
+                              </el-badge>
+                            </div></el-col>
+                          </el-row>
+                        </el-col>
+                      </el-row>
+                    </div>
+                  </div>
                 </el-card>
               </div>
               <p v-if="loading">加载中...</p>
@@ -86,7 +199,7 @@
             </div>
           </el-col>
           <!--        热搜榜和好友推荐-->
-          <el-col :span="6">
+          <el-col :span="6" style="margin-top: -3px">
             <HotSearch></HotSearch>
           </el-col>
         </el-row>
@@ -99,58 +212,150 @@
 <script>
 import Header from "@/components/Header";
 import HotSearch from "@/components/HotSearch";
+import {formatDate} from "_element-ui@2.15.6@element-ui/src/utils/date-util";
+
 export default {
   name: "SearchBlog",
   components: {HotSearch, Header},
   data () {
     return {
+      avatarURL: this.$store.state.avatarURL,
+      pictureURL: this.$store.state.pictureURL,
       blogs: [],
       currentPage: 1,
       total: 100,
-      sum: 0,
+      sum: -1,
       loading: false,
 
-      // 九宫格
-      url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
-      srcList: [
-        'https://fuss10.elemecdn.com/8/27/f01c15bb73e1ef3793e64e6b7bbccjpeg.jpeg',
-        'https://fuss10.elemecdn.com/1/8e/aeffeb4de74e2fde4bd74fc7b4486jpeg.jpeg'
-      ]
+      users: [],
+      usersLength: 0,
     }
+  },
+  created() {
+    const keyWords = this.$route.params.searchWords
+    const formData = new FormData()
+    formData.append("keyWords", keyWords)
+    this.$axios.post("/user/findUsers", formData, {
+      headers: {
+        "Authorization": localStorage.getItem("token")
+      }
+    }).then(res => {
+      this.users = res.data.data
+
+    })
   },
   computed: {
     noMore () {
-      return this.sum > this.total;
+      return this.sum === 0
     },
     disabled () {
       return this.loading || this.noMore
     }
   },
   methods: {
-    load() {
+    load () {
       this.loading = true
       setTimeout(() => {
         const _this = this
         const currentPage = _this.currentPage
-        console.log("-----------*" + _this.blogs)
-        _this.$axios.get("/blog/blogs?currentPage=" + currentPage)
-            .then(res => {
-
-              _this.blogs = _this.blogs.concat(res.data.data.records)
-              // _this.blogs = res.data.data.records
-              _this.currentPage = res.data.data.current + 1
-              _this.total = res.data.data.total
-              _this.sum += res.data.data.size
-              console.log("*********" + _this.blogs)
-            })
+        const keyWords = this.$route.params.searchWords
+        const formData = new FormData()
+        formData.append("keyWords", keyWords)
+        formData.append("currentPage", currentPage)
+        _this.$axios.post("/blog/searchBlog", formData,  {
+          headers: {
+            "Authorization": localStorage.getItem("token")
+          }
+        }).then(res => {
+          if (res.data.data.length != 0) {
+            _this.blogs = _this.blogs.concat(res.data.data)
+          }
+          // _this.blogs = res.data.data.records
+          _this.currentPage = ++_this.currentPage
+          _this.total = _this.blogs.length
+          _this.sum = res.data.data.length
+          console.log("*********"+_this.currentPage+"------" + _this.total +"----" + _this.sum)
+        })
         this.loading = false
       }, 500)
+    },
+    // 预览点击的图片
+    getPictureList(i, j, pictures) {
+      const temp = []
+      pictures.forEach(picture => {
+        temp.push(this.pictureURL + picture)
+      })
+      return temp.slice((i-1)*3+j-1).concat(temp.slice(0,(i-1)*3+j-1))
+    },
+    // 点赞
+    doLike(blog) {
+      console.log(blog.id)
+      blog.createDate = formatDate(blog.createDate,"yyyy-MM-dd HH:mm:ss")
+      if (!blog.love.isLove) {
+        this.$axios.post("/love/doLove", blog, {
+          headers: {
+            "Authorization": localStorage.getItem("token")
+          }
+        }).then(res => {
+              blog.love.loveSize += 1
+              blog.love.isLove = true
+            }
+        )
+      } else {
+        this.$axios.post("/love/unLove", blog, {
+          headers: {
+            "Authorization": localStorage.getItem("token")
+          }
+        }).then(res => {
+              blog.love.loveSize -= 1
+              blog.love.isLove = false
+            }
+        )
+      }
+    },
+    // 转发
+    doRelay(blog) {
+      const formData = new FormData();
+      const id = blog.id
+      formData.append("blogId", id);
+      this.$axios.post("/relay/doRelay", formData, {
+        headers: {
+          "Authorization": localStorage.getItem("token")
+        }
+      }).then(res => {
+        blog.relay.relaySize += 1
+        blog.relay.isRelay = true
+        this.$notify({
+          title: '成功',
+          message: '转发成功',
+          type: 'success'
+        });
+      }).catch(error => {
+        this.$notify.error({
+          title: '错误',
+          message: '转发失败' + error
+        });
+      })
     }
   }
 }
 </script>
 
 <style scoped>
+.infinite-list-wrapper {
+  height: 849px;
+  overflow: auto;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)
+}
+
+.user-list {
+  height: 110px;
+  margin: 5px;
+  border-radius: 5px;
+  overflow: auto;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)
+}
+
 .box {
   width: 100%;
   background-color: #fff;

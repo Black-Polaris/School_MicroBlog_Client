@@ -32,7 +32,7 @@
               <el-col :span="2"></el-col>
               <el-col :span="21">
                 <div>
-                  <el-row style="height: 100px;margin: 5px"  type="flex" v-for="i in ((blog.pictures.length)%3 == 0 ? (blog.pictures.length)/3 : (blog.pictures.length)/3 + 1) ">
+                  <el-row style="height: 100px;margin: 5px"  type="flex" v-for="i in ((blog.pictures.length)%3 == 0 ? Math.floor((blog.pictures.length)/3) : Math.floor((blog.pictures.length)/3) + 1) ">
                     <el-col style="width: 100px;margin: 5px" :span="7" v-for="j in ((blog.pictures.length - 3*(i-1)) > 3 ? 3 : (blog.pictures.length - 3*(i-1))) ">
                       <el-image
                           style="width: 100px; height: 100px; border-radius: 5px"
@@ -54,7 +54,7 @@
                 <el-row  type="flex" justify="space-around">
                   <el-col :span="7"><div>
                     <el-badge :value="blog.relay.relaySize" class="item" style="width: 100%">
-                      <el-button style="width: 100%" @click="doRelay(blog.id)" :type="blog.love.isRelay?'success':''">{{ blog.love.isRelay?'已转发':'转发' }}</el-button>
+                      <el-button style="width: 100%" @click="doRelay(blog)" :type="blog.relay.isRelay?'success':''">{{ blog.relay.isRelay?'已转发':'转发' }}</el-button>
                     </el-badge>
                   </div></el-col>
                   <el-col :span="7"><div>
@@ -64,7 +64,7 @@
                   </div></el-col>
                   <el-col :span="7"><div>
                     <el-badge :value="blog.love.loveSize" class="item" style="width: 100%">
-                      <el-button style="width: 100%" @click="doLike(blog.id)" :type="blog.love.isLove?'success':''"> {{ blog.love.isLove?'已点赞':'点赞' }} </el-button>
+                      <el-button style="width: 100%" @click="doLike(blog)" :type="blog.love.isLove?'success':''"> {{ blog.love.isLove?'已点赞':'点赞' }} </el-button>
                     </el-badge>
                   </div></el-col>
                 </el-row>
@@ -119,7 +119,7 @@
                         <el-col :span="2"></el-col>
                         <el-col :span="21">
                           <div>
-                            <el-row style="height: 100px;margin: 5px"  type="flex" v-for="i in ((blog.fromBlog == null? 0 : blog.fromBlog.pictures.length)%3 == 0 ? (blog.fromBlog == null? 0 : blog.fromBlog.pictures.length)/3 : (blog.fromBlog == null? 0 : blog.fromBlog.pictures.length)/3 + 1) ">
+                            <el-row style="height: 100px;margin: 5px"  type="flex" v-for="i in ((blog.fromBlog == null? 0 : blog.fromBlog.pictures.length)%3 == 0 ? Math.floor((blog.fromBlog == null? 0 : blog.fromBlog.pictures.length)/3) : Math.floor((blog.fromBlog == null? 0 : blog.fromBlog.pictures.length)/3) + 1) ">
                               <el-col style="width: 100px;margin: 5px" :span="7" v-for="j in ((blog.fromBlog == null? 0 : blog.fromBlog.pictures.length - 3*(i-1)) > 3 ? 3 : (blog.fromBlog == null? 0 : blog.fromBlog.pictures.length - 3*(i-1))) ">
                                 <el-image
                                     style="width: 100px; height: 100px; border-radius: 5px"
@@ -146,7 +146,7 @@
                   <el-row  type="flex" justify="space-around">
                     <el-col :span="7"><div>
                       <el-badge :value="blog.relay.relaySize" class="item" style="width: 100%">
-                        <el-button style="width: 100%" @click="doRelay(blog.id)"  :type="blog.love.isRelay?'success':''">{{ blog.love.isRelay?'已转发':'转发' }}</el-button>
+                        <el-button style="width: 100%" @click="doRelay(blog)"  :type="blog.relay.isRelay?'success':''">{{ blog.relay.isRelay?'已转发':'转发' }}</el-button>
                       </el-badge>
                     </div></el-col>
                     <el-col :span="7"><div>
@@ -258,14 +258,17 @@ export default {
       }
     },
     // 转发
-    doRelay(id) {
+    doRelay(blog) {
       const formData = new FormData();
+      const id = blog.id
       formData.append("blogId", id);
       this.$axios.post("/relay/doRelay", formData, {
         headers: {
           "Authorization": localStorage.getItem("token")
         }
       }).then(res => {
+        blog.relay.relaySize += 1
+        blog.relay.isRelay = true
         this.$notify({
           title: '成功',
           message: '转发成功',

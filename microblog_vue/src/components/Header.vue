@@ -31,7 +31,7 @@
             v-model="searchWords">
         </el-input>
         <router-link :to="{name: 'SearchBlog', params: {searchWords: searchWords}}">
-          <el-button size="small" type="primary" icon="el-icon-search" >搜索</el-button>
+          <el-button size="small" type="primary" icon="el-icon-search" @click="goToSearch">搜索</el-button>
         </router-link>
       </div>
     </el-menu>
@@ -100,6 +100,11 @@ export default {
           })
           .catch(_ => {});
     },
+    goToSearch() {
+      this.$router.push('/search/' + this.searchWords)
+      location.reload()
+    }
+
   },
   // 回显用户信息
   created() {
