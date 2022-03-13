@@ -23,7 +23,7 @@
                         </el-col>
                         <el-col :span="19" :offset="1">
                           <el-row :span="6"><div style="font-weight: bold; text-align: left; margin-left: 5px;">{{ users[(i-1)*2+j-1].nickname }}</div></el-row>
-                          <el-row :span="6"><div style="font-size: 10px; text-align: left; margin-left: 5px;">简介：{{ users[(i-1)*2+j-1].description }}</div></el-row>
+                          <el-row :span="6"><div style="font-size: 10px; text-align: left; margin-left: 5px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap">简介：{{ users[(i-1)*2+j-1].description }}</div></el-row>
                         </el-col>
                       </el-row>
                     </el-card>
@@ -223,7 +223,6 @@ export default {
       pictureURL: this.$store.state.pictureURL,
       blogs: [],
       currentPage: 1,
-      total: 100,
       sum: -1,
       loading: false,
 
@@ -272,9 +271,7 @@ export default {
           }
           // _this.blogs = res.data.data.records
           _this.currentPage = ++_this.currentPage
-          _this.total = _this.blogs.length
           _this.sum = res.data.data.length
-          console.log("*********"+_this.currentPage+"------" + _this.total +"----" + _this.sum)
         })
         this.loading = false
       }, 500)

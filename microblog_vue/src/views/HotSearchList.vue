@@ -1,21 +1,19 @@
 <template>
   <div class="infinite-list-wrapper">
-    <div
-        class="list"
-        v-infinite-scroll="load"
-        infinite-scroll-disabled="disabled">
+    <div class="list">
       <!--        微博卡片-->
-      <el-card shadow="hover" style=" margin-bottom: 10px" v-for="blog in blogs" class="list-item" >
+      <el-card shadow="hover" style=" margin-bottom: 10px" v-for="hotSearch in hotSearchList" class="list-item" >
         <!--            微博内容-->
         <el-row type="flex" >
-          <el-col :span="22">
+          <el-col>
             <div style="margin-left: 10px">
-              <h4>
-                <router-link :to="{name: 'BlogDetail', params: {blogId: blog.id}}">
-                  {{ blog.id }}
+              <p style="text-align: left">
+                <span class="el-icon-medal" style="color: red;font-style: italic">No.{{ ++rank }}:&nbsp</span>
+                <router-link style="text-decoration: none;font-weight: bold;color: #333333;font-family: 'Microsoft YaHei'" :to="{name: 'SearchBlog', params: {searchWords: hotSearch.value}}">
+                  {{ hotSearch.value }}
                 </router-link>
-              </h4>
-              <p>{{ blog.content}}</p>
+                <span style="float: right;font-size: 12px">热度:{{ hotSearch.score}}</span>
+              </p>
             </div>
           </el-col>
         </el-row>
@@ -32,49 +30,39 @@ export default {
   name: "HotSearchList",
   data () {
     return {
-      blogs: [],
-      currentPage: 1,
+      hotSearchList: [],
       total: 50,
-      sum: 0,
+      sum: -1,
       loading: false,
+      rank : 0
     }
   },
   computed: {
     noMore () {
-      return this.sum > this.total;
+      return this.sum === 0
     },
     disabled () {
       return this.loading || this.noMore
     }
   },
-  methods: {
-    load () {
-      this.loading = true
-      setTimeout(() => {
-        const _this = this
-        const currentPage = _this.currentPage
-        console.log("-----------*" + _this.blogs)
-        _this.$axios.get("/blog/blogs?currentPage=" + currentPage)
-            .then(res => {
-
-              _this.blogs = _this.blogs.concat(res.data.data.records)
-              // _this.blogs = res.data.data.records
-              _this.currentPage = res.data.data.current + 1
-              _this.total = res.data.data.total
-              _this.sum += res.data.data.size
-              console.log("*********" + _this.blogs)
-            })
-        this.loading = false
-      }, 500)
-    }
+  created() {
+    this.loading = true
+      const _this = this
+      _this.$axios.get("/blog/hotSearch")
+          .then(res => {
+            _this.hotSearchList = res.data.data
+            _this.sum = res.data.data.length
+            console.log(_this.sum)
+          })
+      this.loading = false
   }
+
 }
 </script>
 
 <style scoped>
 .infinite-list-wrapper {
   width: 100%;
-
   height: 790px;
   overflow: auto;
   box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)

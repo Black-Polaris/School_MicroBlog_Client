@@ -83,7 +83,7 @@ export default {
       );
       const text = this.textarea.replace(/\r\n/g, '<br/>').replace(/\n/g, '<br/>').replace(/\s/g, ' ')
       formData.append('textarea', text)
-      this.$axios.post("blog/addBlog", formData, {
+      this.$axios.post("/blog/addBlog", formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           "Authorization": localStorage.getItem("token")
