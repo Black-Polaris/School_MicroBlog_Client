@@ -6,7 +6,7 @@
           v-infinite-scroll="load"
           infinite-scroll-disabled="disabled">
         <!--        微博卡片-->
-        <el-card shadow="hover" style=" margin-bottom: 10px" v-for="blog in blogs" class="list-item" >
+        <el-card shadow="hover" style=" margin-bottom: 10px" v-for="blog in blogs" class="list-item" v-show="blog.status != -1">
 <!--          原创状态微博-->
           <div v-show="blog.status == 1">
           <el-row :gutter="10">
@@ -16,7 +16,8 @@
               </div>
             </el-col>
             <el-col :span="4"><div style="font-weight: bold; text-align: left; margin-left: 5px;">{{ blog.user.nickname }}</div></el-col>
-            <el-col :span="4" :offset="14"><div style="font-size: 10px" dataformatas="yyyy-MM-dd HH:mm:ss">{{ blog.createDate }}</div></el-col>
+            <el-col :span="4" :offset="13"><div style="font-size: 10px" dataformatas="yyyy-MM-dd HH:mm:ss">{{ blog.createDate }}</div></el-col>
+            <el-col :span="1"><el-button type="danger" size="mini" icon="el-icon-delete" circle @click="deleteBlog(blog)"></el-button></el-col>
           </el-row>
           <!--            微博内容-->
           <el-row type="flex" >
@@ -59,7 +60,7 @@
                   </div></el-col>
                   <el-col :span="7"><div>
                     <el-badge :value="blog.comment" class="item" style="width: 100%">
-                      <el-button style="width: 100%">评论</el-button>
+                      <el-button style="width: 100%" @click="doComment(blog)">评论</el-button>
                     </el-badge>
                   </div></el-col>
                   <el-col :span="7"><div>
@@ -81,7 +82,8 @@
                 </div>
               </el-col>
               <el-col :span="4"><div style="font-weight: bold; text-align: left; margin-left: 5px;">{{ blog.user.nickname }}</div></el-col>
-              <el-col :span="4" :offset="14"><div style="font-size: 10px" dataformatas="yyyy-MM-dd HH:mm:ss">{{ blog.createDate }}</div></el-col>
+              <el-col :span="4" :offset="13"><div style="font-size: 10px" dataformatas="yyyy-MM-dd HH:mm:ss">{{ blog.createDate }}</div></el-col>
+              <el-col :span="1"><el-button type="danger" size="mini" icon="el-icon-delete" circle @click="deleteBlog(blog)"></el-button></el-col>
             </el-row>
             <!--            微博内容-->
             <div>
@@ -151,7 +153,7 @@
                     </div></el-col>
                     <el-col :span="7"><div>
                       <el-badge :value="blog.comment" class="item" style="width: 100%">
-                        <el-button style="width: 100%">评论</el-button>
+                        <el-button style="width: 100%" @click="doComment(blog)">评论</el-button>
                       </el-badge>
                     </div></el-col>
                     <el-col :span="7"><div>
@@ -280,6 +282,41 @@ export default {
           message: '转发失败' + error
         });
       })
+    },
+    // 评论
+    doComment(blog) {
+      let myBlog = JSON.stringify(blog)
+      this.$router.push({
+        path: '/blog/' + blog.id,
+        query: {blogMsg: encodeURIComponent(myBlog)}
+      })
+    },
+    // 删除微博
+    deleteBlog(blog) {
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const blogId = blog.id
+        const formData = new FormData()
+        formData.append("blogId", blogId)
+        this.$axios.post('/blog/delete/', formData, {
+          headers: {
+            "Authorization": localStorage.getItem("token")
+          }
+        }).then(res => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
     }
   }
 }

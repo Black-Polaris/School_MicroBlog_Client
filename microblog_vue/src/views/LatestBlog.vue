@@ -6,7 +6,7 @@
           v-infinite-scroll="load"
           infinite-scroll-disabled="disabled">
         <!--        微博卡片-->
-        <el-card shadow="hover" style=" margin-bottom: 10px" v-for="blog in blogs" class="list-item" >
+        <el-card shadow="hover" style=" margin-bottom: 10px" v-for="blog in blogs" class="list-item" v-show="blog.status != -1">
           <!--          原创状态微博-->
           <div v-show="blog.status == 1">
             <el-row :gutter="10">
@@ -59,7 +59,7 @@
                     </div></el-col>
                     <el-col :span="7"><div>
                       <el-badge :value="blog.comment" class="item" style="width: 100%">
-                        <el-button style="width: 100%">评论</el-button>
+                        <el-button style="width: 100%" @click="doComment(blog)">评论</el-button>
                       </el-badge>
                     </div></el-col>
                     <el-col :span="7"><div>
@@ -151,7 +151,7 @@
                     </div></el-col>
                     <el-col :span="7"><div>
                       <el-badge :value="blog.comment" class="item" style="width: 100%">
-                        <el-button style="width: 100%">评论</el-button>
+                        <el-button style="width: 100%" @click="doComment(blog)">评论</el-button>
                       </el-badge>
                     </div></el-col>
                     <el-col :span="7"><div>
@@ -279,6 +279,14 @@ export default {
           title: '错误',
           message: '转发失败' + error
         });
+      })
+    },
+    // 评论
+    doComment(blog) {
+      let myBlog = JSON.stringify(blog)
+      this.$router.push({
+        path: '/blog/' + blog.id,
+        query: {blogMsg: encodeURIComponent(myBlog)}
       })
     }
 
