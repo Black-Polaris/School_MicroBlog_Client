@@ -7,6 +7,7 @@ import BlogDetail from "@/views/BlogDetail";
 import Mine from "@/views/Mine";
 import IndexBlogs from "@/views/IndexBlogs";
 import SearchBlog from "@/views/SearchBlog";
+import UserBlogs from "@/views/UserBlogs";
 
 Vue.use(VueRouter)
 
@@ -56,6 +57,11 @@ const routes = [
     path: '/search/:searchWords',
     name: 'SearchBlog',
     component: SearchBlog
+  },
+  {
+    path: '/userBlogs/:userId',
+    name: 'UserBlogs',
+    component: UserBlogs
   }
 ]
 

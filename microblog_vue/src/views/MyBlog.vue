@@ -15,7 +15,13 @@
                 <el-avatar :src="avatarURL + blog.user.avatar.avatarUrl"></el-avatar>
               </div>
             </el-col>
-            <el-col :span="4"><div style="font-weight: bold; text-align: left; margin-left: 5px;">{{ blog.user.nickname }}</div></el-col>
+            <el-col :span="4">
+              <div style="font-weight: bold; text-align: left; margin-left: 5px;">
+                <router-link style="text-decoration: none;font-weight: bold;color: #333333;font-family: 'Microsoft YaHei'" :to="{name: 'UserBlogs', params: {userId: blog.user.id}}">
+                {{ blog.user.nickname }}
+                </router-link>
+              </div>
+            </el-col>
             <el-col :span="4" :offset="13"><div style="font-size: 10px" dataformatas="yyyy-MM-dd HH:mm:ss">{{ blog.createDate }}</div></el-col>
             <el-col :span="1"><el-button type="danger" size="mini" icon="el-icon-delete" circle @click="deleteBlog(blog)"></el-button></el-col>
           </el-row>
@@ -81,7 +87,13 @@
                   <el-avatar :src="avatarURL + blog.user.avatar.avatarUrl"></el-avatar>
                 </div>
               </el-col>
-              <el-col :span="4"><div style="font-weight: bold; text-align: left; margin-left: 5px;">{{ blog.user.nickname }}</div></el-col>
+              <el-col :span="4">
+                <div style="font-weight: bold; text-align: left; margin-left: 5px;">
+                  <router-link style="text-decoration: none;font-weight: bold;color: #333333;font-family: 'Microsoft YaHei'" :to="{name: 'UserBlogs', params: {userId: blog.user.id}}">
+                    {{ blog.user.nickname }}
+                  </router-link>
+                </div>
+              </el-col>
               <el-col :span="4" :offset="13"><div style="font-size: 10px" dataformatas="yyyy-MM-dd HH:mm:ss">{{ blog.createDate }}</div></el-col>
               <el-col :span="1"><el-button type="danger" size="mini" icon="el-icon-delete" circle @click="deleteBlog(blog)"></el-button></el-col>
             </el-row>

@@ -9,34 +9,13 @@
         <el-row>
           <!--        微博列表-->
           <el-col :span="18" class="infinite-list-wrapper">
-            <div class="infinite-list-wrapper">
-<!--              查找的用戶-->
-              <div class="user-list"  v-show="users.length != 0" style="padding: 3px">
-                <el-row type="flex" v-for="i in (users.length%2 == 0 ? Math.floor(users.length/2) : Math.floor(users.length/2) +1)">
-                  <el-col style="width: 49%;margin: 5px" v-for="j in (users.length - 2*(i-1)) > 2 ? 2 : (users.length -2*(i-1))">
-                    <el-card shadow="hover" style="margin: 4px; margin-bottom: -3px;">
-                      <el-row :gutter="21">
-                        <el-col :span="2">
-                          <div>
-                            <el-avatar :src="avatarURL + users[(i-1)*2+j-1].avatar.avatarUrl"></el-avatar>
-                          </div>
-                        </el-col>
-                        <el-col :span="19" :offset="1">
-                          <el-row :span="6"><div style="font-weight: bold; text-align: left; margin-left: 5px;">{{ users[(i-1)*2+j-1].nickname }}</div></el-row>
-                          <el-row :span="6"><div style="font-size: 10px; text-align: left; margin-left: 5px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap">简介：{{ users[(i-1)*2+j-1].description }}</div></el-row>
-                        </el-col>
-                      </el-row>
-                    </el-card>
-                  </el-col>
-                </el-row>
-              </div>
-
-              <div
-                  class="list"
-                  v-infinite-scroll="load"
-                  infinite-scroll-disabled="disabled">
+            <!--            微博内容-->
+            <div>
+              <div class="list"
+                   v-infinite-scroll="load"
+                   infinite-scroll-disabled="disabled">
                 <!--        微博卡片-->
-                <el-card shadow="hover" style=" margin-bottom: 10px" v-for="blog in blogs" class="list-item" v-show="blog.status != -1">
+                <el-card shadow="hover" style=" margin-bottom: 10px" class="list-item" v-for="blog in blogs" v-show="blog.status != -1">
                   <!--          原创状态微博-->
                   <div v-show="blog.status == 1">
                     <el-row :gutter="10">
@@ -45,13 +24,7 @@
                           <el-avatar :src="avatarURL + blog.user.avatar.avatarUrl"></el-avatar>
                         </div>
                       </el-col>
-                      <el-col :span="4">
-                        <div style="font-weight: bold; text-align: left; margin-left: 5px;">
-                          <router-link style="text-decoration: none;font-weight: bold;color: #333333;font-family: 'Microsoft YaHei'" :to="{name: 'UserBlogs', params: {userId: blog.user.id}}">
-                            {{ blog.user.nickname }}
-                          </router-link>
-                        </div>
-                      </el-col>
+                      <el-col :span="4"><div style="font-weight: bold; text-align: left; margin-left: 5px;">{{ blog.user.nickname }}</div></el-col>
                       <el-col :span="4" :offset="14"><div style="font-size: 10px" dataformatas="yyyy-MM-dd HH:mm:ss">{{ blog.createDate }}</div></el-col>
                     </el-row>
                     <!--            微博内容-->
@@ -116,13 +89,7 @@
                           <el-avatar :src="avatarURL + blog.user.avatar.avatarUrl"></el-avatar>
                         </div>
                       </el-col>
-                      <el-col :span="4">
-                        <div style="font-weight: bold; text-align: left; margin-left: 5px;">
-                          <router-link style="text-decoration: none;font-weight: bold;color: #333333;font-family: 'Microsoft YaHei'" :to="{name: 'UserBlogs', params: {userId: blog.user.id}}">
-                            {{ blog.user.nickname }}
-                          </router-link>
-                        </div>
-                      </el-col>
+                      <el-col :span="4"><div style="font-weight: bold; text-align: left; margin-left: 5px;">{{ blog.user.nickname }}</div></el-col>
                       <el-col :span="4" :offset="14"><div style="font-size: 10px" dataformatas="yyyy-MM-dd HH:mm:ss">{{ blog.createDate }}</div></el-col>
                     </el-row>
                     <!--            微博内容-->
@@ -209,10 +176,20 @@
               <p v-if="loading">加载中...</p>
               <p v-if="noMore">没有更多了</p>
             </div>
+
           </el-col>
           <!--        热搜榜和好友推荐-->
           <el-col :span="6" style="margin-top: -3px">
-            <HotSearch></HotSearch>
+            <el-card class="box-card">
+              <el-descriptions title="博主信息" :column="1">
+                <el-descriptions-item label="用户名">{{ user.nickname }}</el-descriptions-item>
+                <el-descriptions-item label="简介">{{ user.description }}</el-descriptions-item>
+                <el-descriptions-item label="性别">
+                  <el-tag size="small">{{ user.gender }}</el-tag>
+                </el-descriptions-item>
+                <el-descriptions-item label="出生日期">{{ user.birthDate}}</el-descriptions-item>
+              </el-descriptions>
+            </el-card>
           </el-col>
         </el-row>
       </el-main>
@@ -222,38 +199,32 @@
 </template>
 
 <script>
-import Header from "@/components/Header";
 import HotSearch from "@/components/HotSearch";
+import Header from "@/components/Header";
+import Emoji from "@/components/Emoji";
 import {formatDate} from "_element-ui@2.15.6@element-ui/src/utils/date-util";
 
 export default {
-  name: "SearchBlog",
-  components: {HotSearch, Header},
-  data () {
+  name: "UserBlogs",
+  components: {HotSearch, Header, Emoji},
+  data() {
     return {
       avatarURL: this.$store.state.avatarURL,
       pictureURL: this.$store.state.pictureURL,
       blogs: [],
       currentPage: 1,
+      total: 100,
       sum: -1,
       loading: false,
-
-      users: [],
-      usersLength: 0,
+      user: {}
     }
   },
   created() {
-    const keyWords = this.$route.params.searchWords
-    const formData = new FormData()
-    formData.append("keyWords", keyWords)
-    this.$axios.post("/user/findUsers", formData, {
-      headers: {
-        "Authorization": localStorage.getItem("token")
-      }
-    }).then(res => {
-      this.users = res.data.data
-
-    })
+    let userId = decodeURIComponent(this.$route.params.userId)
+    this.$axios.get("/user/findUserById?userId=" + userId )
+        .then(res => {
+          this.user = res.data.data
+        })
   },
   computed: {
     noMore () {
@@ -269,11 +240,11 @@ export default {
       setTimeout(() => {
         const _this = this
         const currentPage = _this.currentPage
-        const keyWords = this.$route.params.searchWords
+        let userId = decodeURIComponent(this.$route.params.userId)
         const formData = new FormData()
-        formData.append("keyWords", keyWords)
-        formData.append("currentPage", currentPage)
-        _this.$axios.post("/blog/searchBlog", formData,  {
+        formData.append('userId', userId)
+        formData.append('currentPage', currentPage)
+        _this.$axios.post("/blog/userBlogs", formData,  {
           headers: {
             "Authorization": localStorage.getItem("token")
           }
@@ -283,7 +254,9 @@ export default {
           }
           // _this.blogs = res.data.data.records
           _this.currentPage = ++_this.currentPage
+          _this.total = _this.blogs.length
           _this.sum = res.data.data.length
+          console.log("*********"+_this.currentPage+"------" + _this.total +"----" + _this.sum)
         })
         this.loading = false
       }, 500)
@@ -294,12 +267,12 @@ export default {
       pictures.forEach(picture => {
         temp.push(this.pictureURL + picture)
       })
-      return temp.slice((i-1)*3+j-1).concat(temp.slice(0,(i-1)*3+j-1))
+      return temp.slice((i - 1) * 3 + j - 1).concat(temp.slice(0, (i - 1) * 3 + j - 1))
     },
     // 点赞
     doLike(blog) {
       console.log(blog.id)
-      blog.createDate = formatDate(blog.createDate,"yyyy-MM-dd HH:mm:ss")
+      blog.createDate = formatDate(blog.createDate, "yyyy-MM-dd HH:mm:ss")
       if (!blog.love.isLove) {
         this.$axios.post("/love/doLove", blog, {
           headers: {
@@ -346,6 +319,15 @@ export default {
         });
       })
     },
+    // 关闭编辑页面
+    handleClose(done) {
+      this.$confirm('确认关闭？')
+          .then(_ => {
+            done();
+          })
+          .catch(_ => {
+          });
+    },
     // 评论
     doComment(blog) {
       let myBlog = JSON.stringify(blog)
@@ -353,7 +335,7 @@ export default {
         path: '/blog/' + blog.id,
         query: {blogMsg: encodeURIComponent(myBlog)}
       })
-    }
+    },
   }
 }
 </script>
