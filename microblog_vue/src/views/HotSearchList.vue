@@ -52,7 +52,6 @@ export default {
           .then(res => {
             _this.hotSearchList = res.data.data
             _this.sum = res.data.data.length
-            console.log(_this.sum)
           })
       this.loading = false
   }

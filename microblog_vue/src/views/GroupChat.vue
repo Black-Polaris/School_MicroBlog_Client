@@ -142,7 +142,6 @@ export default {
         createDate: new Date()
       }
       this.socket.send(JSON.stringify(entity))
-      console.log(this.msgList)
       this.msg = ''
       this.hint = ''
     }

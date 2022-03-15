@@ -51,7 +51,6 @@ export default {
       }
       changeSelectedText(textArea,this.faceList[index]);
       this.textarea=textArea.value;// 要同步data中的数据
-      // console.log(this.faceList[index]);
       return;
     }
   }

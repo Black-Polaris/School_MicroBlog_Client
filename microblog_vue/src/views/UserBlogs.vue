@@ -256,7 +256,6 @@ export default {
           _this.currentPage = ++_this.currentPage
           _this.total = _this.blogs.length
           _this.sum = res.data.data.length
-          console.log("*********"+_this.currentPage+"------" + _this.total +"----" + _this.sum)
         })
         this.loading = false
       }, 500)
@@ -271,7 +270,6 @@ export default {
     },
     // 点赞
     doLike(blog) {
-      console.log(blog.id)
       blog.createDate = formatDate(blog.createDate, "yyyy-MM-dd HH:mm:ss")
       if (!blog.love.isLove) {
         this.$axios.post("/love/doLove", blog, {

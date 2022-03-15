@@ -28,7 +28,6 @@ export default {
     this.$axios.get("/blog/randomHotSearch")
         .then(res => {
           this.randomHotSearchSet = res.data.data
-          console.log(this.randomHotSearchSet + " ----------**********---------")
         })
   },
 
@@ -37,7 +36,6 @@ export default {
       this.$axios.get("/blog/randomHotSearch")
           .then(res => {
             this.randomHotSearchSet = res.data.data
-            console.log(this.randomHotSearchSet + " ----------**********---------")
           })
     }
   }

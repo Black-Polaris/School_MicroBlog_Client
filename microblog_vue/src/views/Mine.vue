@@ -265,7 +265,6 @@ export default {
             this.$store.getters.getUser.avatar.avatarUrl = this.avatarUrl
             sessionStorage.setItem("userInfo", JSON.stringify(pojo))
             this.reload()
-            console.log(this.avatarUrl)
             this.dialogOfUpload = false;
             this.$notify({
               title: '成功',

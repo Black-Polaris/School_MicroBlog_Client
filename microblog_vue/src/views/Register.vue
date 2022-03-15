@@ -83,7 +83,6 @@ export default {
             gender: this.ruleForm.gender,
             birthDate: this.ruleForm.birthDate
           }).then(res => {
-            console.log(res.data.data)
             this.$router.push("/login")
             this.$notify({
               title: '成功',
