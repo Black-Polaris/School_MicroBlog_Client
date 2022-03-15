@@ -8,6 +8,7 @@ import Mine from "@/views/Mine";
 import IndexBlogs from "@/views/IndexBlogs";
 import SearchBlog from "@/views/SearchBlog";
 import UserBlogs from "@/views/UserBlogs";
+import Register from "@/views/Register";
 
 Vue.use(VueRouter)
 
@@ -26,6 +27,11 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: Login
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    component: Register
   },
   {
     path: '/blog/:blogId/edit',

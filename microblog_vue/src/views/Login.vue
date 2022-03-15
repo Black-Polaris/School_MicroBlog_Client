@@ -1,26 +1,24 @@
 <template>
-  <div>
-    <el-container>
-      <el-header>
-        <img class="logo" src="src/assets/logo.png">
-      </el-header>
+  <div id="poster">
+    <el-form class="login-container" label-position="left"
+             label-width="0px" :model="ruleForm" :rules="rules" ref="ruleForm">
+      <h3 class="login_title">账号登录</h3>
+      <el-form-item prop="username">
+        <el-input type="text" v-model="ruleForm.username"
+                  auto-complete="off" placeholder="用户名"></el-input>
+      </el-form-item>
+      <el-form-item prop="password">
+        <el-input type="password" v-model="ruleForm.password"
+                  auto-complete="off" placeholder="密码"></el-input>
+      </el-form-item>
 
-      <el-main>
-        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-          <el-form-item label="用户名" prop="username">
-            <el-input v-model="ruleForm.username"></el-input>
-          </el-form-item>
-          <el-form-item label="密码" prop="password">
-            <el-input type="password" v-model="ruleForm.password"></el-input>
-          </el-form-item>
-
-          <el-form-item>
-            <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
-            <el-button @click="resetForm('ruleForm')">重置</el-button>
-          </el-form-item>
-        </el-form>
-      </el-main>
-    </el-container>
+      <el-form-item style="width: 100%">
+        <el-button type="primary" style="width: 40%; background: #505458;border: none;margin-right: 40px" @click="submitForm('ruleForm')">登录</el-button>
+        <router-link to="register">
+          <el-button type="primary" style="width: 40%;background-color: #505458;border: none">注册</el-button>
+        </router-link>
+      </el-form-item>
+    </el-form>
   </div>
 </template>
 
@@ -70,57 +68,32 @@ export default {
         }
       });
     },
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
-    }
+
   }
 }
 </script>
 
-
-
 <style scoped>
-.logo {
-  height: 60%;
-  margin-top: 10px;
+.login-container {
+  border-radius: 15px;
+  background-clip: padding-box;
+  margin: 150px auto;
+  width: 350px;
+  padding: 35px 35px 15px 35px;
+  background: #fff;
+  border: 1px solid #eaeaea;
+  box-shadow: 0 0 25px #cac6c6;
 }
-
-.demo-ruleForm {
-  max-width: 500px;
-  margin: 0 auto;
-}
-
-.el-header, .el-footer {
-  background-color: #B3C0D1;
-  color: #333;
+.login_title {
+  margin: 0px auto 45px auto;
   text-align: center;
-  line-height: 60px;
+  color: #505458;
 }
-
-.el-aside {
-  background-color: #D3DCE6;
-  color: #333;
-  text-align: center;
-  line-height: 200px;
+#poster{
+  height: 100%;
+  width: 100%;
 }
-
-.el-main {
-  /*background-color: #E9EEF3;*/
-  color: #333;
-  text-align: center;
-  line-height: 160px;
-}
-
-body > .el-container {
-  margin-bottom: 40px;
-}
-
-.el-container:nth-child(5) .el-aside,
-.el-container:nth-child(6) .el-aside {
-  line-height: 260px;
-}
-
-.el-container:nth-child(7) .el-aside {
-  line-height: 320px;
+body{
+  margin: 0px;
 }
 </style>
