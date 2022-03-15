@@ -9,6 +9,7 @@ import IndexBlogs from "@/views/IndexBlogs";
 import SearchBlog from "@/views/SearchBlog";
 import UserBlogs from "@/views/UserBlogs";
 import Register from "@/views/Register";
+import GroupChat from "@/views/GroupChat";
 
 Vue.use(VueRouter)
 
@@ -68,6 +69,11 @@ const routes = [
     path: '/userBlogs/:userId',
     name: 'UserBlogs',
     component: UserBlogs
+  },
+  {
+    path: '/groupChat',
+    name: 'GroupChat',
+    component: GroupChat
   }
 ]
 

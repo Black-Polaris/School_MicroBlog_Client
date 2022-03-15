@@ -83,6 +83,7 @@
 
 <script>
 import Header from "@/components/Header";
+import router from "@/router";
 
 export default {
   name: "Mine",
@@ -151,13 +152,15 @@ export default {
   },
 
   created() {
-    if (this.$store.getters.getUser) {
+    if (this.$store.getters.getUser.id != null) {
       this.avatarUrl = this.$store.getters.getUser.avatar.avatarUrl
       this.ruleForm.username = this.$store.getters.getUser.username
       this.ruleForm.nickname = this.$store.getters.getUser.nickname
       this.ruleForm.description = this.$store.getters.getUser.description
       this.ruleForm.gender = this.$store.getters.getUser.gender
       this.ruleForm.birthDate = this.$store.getters.getUser.birthDate
+    } else {
+      router.push("/login")
     }
   },
 
