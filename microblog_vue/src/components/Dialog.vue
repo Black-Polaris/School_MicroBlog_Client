@@ -1,70 +1,62 @@
 <template>
-  <el-container class="box">
-    <!--    header部分-->
-    <el-header><Header></Header></el-header>
-    <el-container>
-      <el-main>
-        <div class="dialog">
-          <div class="top">
-            <h3 style="text-align: center">仲园聊天室</h3>
-          </div>
-          <div class="middle" @mouseover="over" @mouseout="out">
-            <div v-if="msgList.length">
-              <div v-for="msg in msgList">
-                <div class="msg" :style="msg.fromId != userId ? 'flex-direction: row;' : 'flex-direction: row-reverse;'">
-                  <div class="avatar">
-                    <el-avatar :src="avatarURL + msg.fromUser.avatar.avatarUrl"/>
-                  </div>
-                  <div v-if="msg.fromId != userId" style="flex: 13;">
-                    <div class="bubble-msg-left" style="margin-right: 75px;">
-                      {{ msg.message }}
-                    </div>
-                  </div>
-                  <div v-else style="flex: 13;">
-                    <div class="bubble-msg-right" style="margin-left: 75px;">
-                      {{ msg.message }}
-                    </div>
-                  </div>
-                </div>
+  <div v-if="contact" class="dialog">
+    <div class="top">
+      <div class="name">
+        {{ contact.nickname }}
+      </div>
+    </div>
+    <div class="middle" @mouseover="over" @mouseout="out">
+      <div v-if="msgList.length">
+        <div v-for="msg in msgList">
+          <div class="msg" :style="msg.fromId === contact.id ? 'flex-direction: row;' : 'flex-direction: row-reverse;'">
+            <div class="avatar">
+              <el-avatar :src="avatarURL + msg.fromUser.avatar.avatarUrl"/>
+            </div>
+            <div v-if="msg.fromId === contact.id" style="flex: 13;">
+              <div class="bubble-msg-left" style="margin-right: 75px;">
+                {{ msg.message }}
+              </div>
+            </div>
+            <div v-else style="flex: 13;">
+              <div class="bubble-msg-right" style="margin-left: 75px;">
+                {{ msg.message }}
               </div>
             </div>
           </div>
-          <div class="line"></div>
-          <div class="bottom">
-            <label>
+        </div>
+      </div>
+    </div>
+    <div class="line"></div>
+    <div class="bottom">
+      <label>
         <textarea
             class="messageText"
             maxlength="256"
             v-model="msg"
             :placeholder="hint"
             @keydown.enter="sendMsg($event)"
-            ></textarea>
-            </label>
-            <button class="send" :class="{emptyText: isEmptyText}" title="按下 ENTER 发送" @click="sendMsg()">发送</button>
-          </div>
-        </div>
-      </el-main>
-    </el-container>
-  </el-container>
-
+        ></textarea>
+      </label>
+      <button class="send" :class="{emptyText: isEmptyText}" title="按下 ENTER 发送" @click="sendMsg()">发送</button>
+    </div>
+  </div>
+  <div v-else class="info">
+    <div class="msg">
+      找个好友聊天吧~~~
+    </div>
+  </div>
 </template>
 
 <script>
-import Header from "@/components/Header";
-
 export default {
-  name: "GroupChat",
-  components: {Header},
-  created() {
-    this.$axios.get("/message/pullMsg", {
-      headers: {
-        "Authorization": localStorage.getItem("token")
-      }
-    }).then(res => {
-      this.msgList = res.data.data
-    }).catch(err => {
-      console.log(err)
-    })
+  name: "Dialog",
+  props: {
+    contact: {
+      type: Object
+    },
+    msgList: {
+      type: Array
+    }
   },
   mounted() {
     if ("WebSocket" in window) {
@@ -77,7 +69,11 @@ export default {
     }
     // 为防止网络和其他一些原因，每隔一段时间自动从信箱中获取信息
     this.interval = setInterval(() => {
-      this.$axios.get("/message/pullMsg", {
+      const formDate = new FormData()
+      formDate.append("fromId", this.$store.getters.getUser.id)
+      formDate.append("toId", this.contact.id)
+
+      this.$axios.post("/message/pullBothMsg", formDate,{
         headers: {
           "Authorization": localStorage.getItem("token")
         }
@@ -89,7 +85,6 @@ export default {
     }, 15000)
   },
   beforeDestroy() {
-    // 清楚定时器的设置
     !this.interval &&clearInterval(this.interval)
   },
   data() {
@@ -102,12 +97,10 @@ export default {
       interval: null,
       isEmptyText: true,
       userId: this.$store.getters.getUser.id,
-      msgList: []
     }
   },
   watch: {
     msgList() {
-      // 保证滚动条(如果存在), 始终在最下方
       const mid = document.querySelector('.middle')
       this.$nextTick(() => {
         mid && (mid.scrollTop = mid.scrollHeight)
@@ -138,7 +131,7 @@ export default {
       }
       let entity = {
         fromId: this.$store.getters.getUser.id,
-        toId: 0,
+        toId: this.contact.id,
         message: this.msg,
         createDate: new Date()
       }
@@ -151,22 +144,13 @@ export default {
 </script>
 
 <style scoped>
-.box {
-  width: 100%;
-  height: 900px;
-  background-color: #fff;
-}
 :root {
   --scroll-color: #0000;
 }
 .dialog {
-  margin-top: 72px;
-  margin-left: auto;
-  margin-right: auto;
-  border-radius: 5px;
-  border: 1px solid #87ceeb;
-  width: 800px;
-  background: #f2f2f2;
+  width: 719px;
+  height: 100%;
+  float: right;
 }
 .name {
   position: relative;
@@ -277,12 +261,11 @@ export default {
 .messageText {
   position: relative;
   margin-right: 2px;
-  margin-bottom: 5px;
   font: 14px/1.5 Helvetica,Arial,Tahoma,微软雅黑;
-  width: 102%;
+  width: 100%;
   height: 106px;
   outline: none;
-  background: white;
+  background: #efeded;
   border: 0 none;
   overflow-y: auto;
   -webkit-box-sizing: border-box;
@@ -303,7 +286,7 @@ export default {
 .send {
   float: right;
   position: relative;
-  top: -30px;
+  top: -20px;
   left: 10px;
   background-color: #51a5e6;
   border: #87ceeb;
@@ -320,4 +303,3 @@ export default {
   background-color: #d0d0d0;
 }
 </style>
-

@@ -57,6 +57,7 @@ export default {
     return {
       navList:[
         {name:'/blogs',navItem:'首页'},
+        {name: '/chat', navItem: '聊天'},
         {name:'/groupChat',navItem: '群聊室'},
         {name:'/Mine',navItem: '个人中心'}
       ],
