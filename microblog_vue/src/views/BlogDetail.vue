@@ -29,7 +29,12 @@
                           </router-link>
                         </div>
                       </el-col>
-                      <el-col :span="4" :offset="14"><div style="font-size: 10px" dataformatas="yyyy-MM-dd HH:mm:ss">{{ blog.createDate }}</div></el-col>
+                      <el-col :span="4" :offset="11"><div style="font-size: 10px;" dataformatas="yyyy-MM-dd HH:mm:ss">{{ blog.createDate }}</div></el-col>
+                      <el-col :span="3">
+                        <el-button v-show="blog.userId != userId" :class="blog.hadFollow?'el-icon-star-on':'el-icon-star-off'" :type="blog.hadFollow?'success':'primary'" round @click="doFollow(blog)">
+                          {{ blog.hadFollow?'已关注':'关注' }}
+                        </el-button>
+                      </el-col>
                     </el-row>
                     <!--            微博内容-->
                     <el-row type="flex" >
@@ -100,7 +105,12 @@
                           </router-link>
                         </div>
                       </el-col>
-                      <el-col :span="4" :offset="14"><div style="font-size: 10px" dataformatas="yyyy-MM-dd HH:mm:ss">{{ blog.createDate }}</div></el-col>
+                      <el-col :span="4" :offset="11"><div style="font-size: 10px;" dataformatas="yyyy-MM-dd HH:mm:ss">{{ blog.createDate }}</div></el-col>
+                      <el-col :span="3">
+                        <el-button v-show="blog.userId != userId" :class="blog.hadFollow?'el-icon-star-on':'el-icon-star-off'" :type="blog.hadFollow?'success':'primary'" round @click="doFollow(blog)">
+                          {{ blog.hadFollow?'已关注':'关注' }}
+                        </el-button>
+                      </el-col>
                     </el-row>
                     <!--            微博内容-->
                     <div>
@@ -272,7 +282,9 @@ export default {
       dialogVisible: false,
       textarea: '',
       blog: {},
-      comments: []
+      comments: [],
+      // 登录者id
+      userId: this.$store.getters.getUser.id,
     }
   },
   created() {
@@ -381,7 +393,38 @@ export default {
           message: '评论失败' + error
         });
       })
+    },
+    // 关注
+    doFollow(blog) {
+      const formDate = new FormData()
+      formDate.append("followeeId", blog.userId)
+      if (!blog.hadFollow) {
+        this.$axios.post("/follow/doFollow", formDate, {
+          headers: {
+            "Authorization": localStorage.getItem("token")
+          }
+        }).then(res => {
+          for(let i =0; i < this.blogs.length; i++) {
+            if (this.blogs[i].userId == blog.userId) {
+              this.blogs[i].hadFollow = true
+            }
+          }
+        })
+      } else {
+        this.$axios.post("/follow/unFollow", formDate, {
+          headers: {
+            "Authorization": localStorage.getItem("token")
+          }
+        }).then(res => {
+          for(let i =0; i < this.blogs.length; i++) {
+            if (this.blogs[i].userId == blog.userId) {
+              this.blogs[i].hadFollow = false
+            }
+          }
+        })
+      }
     }
+
   }
 
 

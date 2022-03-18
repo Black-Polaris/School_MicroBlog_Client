@@ -2,7 +2,7 @@
   <el-card class="box-card">
     <div slot="header" class="clearfix">
       <span>校园热搜</span>
-      <el-button style="float: right; padding: 3px 0" type="text" class="el-icon-refresh" @click="refresh">刷新</el-button>
+      <el-button style="float: right; padding: 3px 0" type="text" class="el-icon-refresh" @click="refresh">换一批</el-button>
     </div>
     <div v-for="randomHotSearch in randomHotSearchSet" class="text item">
       <p style="text-align: left;white-space: nowrap;overflow: hidden;text-overflow:ellipsis;">

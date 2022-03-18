@@ -38,9 +38,10 @@ import LatestBlog from "@/views/LatestBlog";
 import HotSearch from "@/components/HotSearch";
 import HeaderTabs from "@/components/HeaderTabs";
 import HotSearchList from "@/views/HotSearchList";
+import FollowBlog from "@/views/FollowBlog";
 export default {
   name: "IndexBlogs",
-  components: {HotSearchList, HeaderTabs, HotSearch, LatestBlog,MyBlog,BlogDetail, Blogs, Header, AsideMenu},
+  components: {HotSearchList, HeaderTabs, HotSearch, LatestBlog,MyBlog,BlogDetail, Blogs, Header, AsideMenu, FollowBlog},
   data() {
     return {
       comp: 'HeaderTabs',
@@ -65,6 +66,10 @@ export default {
         this.componentKey += 1
       }
       if (value === '3') {
+        this.comp = 'FollowBlog'
+        this.componentKey += 1
+      }
+      if (value === '4') {
         this.comp = 'HotSearchList'
         this.componentKey += 1
       }

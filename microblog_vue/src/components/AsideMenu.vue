@@ -17,6 +17,10 @@
         <span slot="title">个人微博</span>
       </el-menu-item>
       <el-menu-item index = "3">
+      <i class="el-icon-star-off"></i>
+      <span slot="title">特别关注</span>
+      </el-menu-item>
+      <el-menu-item index = "4">
         <i class="el-icon-search"></i>
         <span slot="title">热搜榜单</span>
       </el-menu-item>

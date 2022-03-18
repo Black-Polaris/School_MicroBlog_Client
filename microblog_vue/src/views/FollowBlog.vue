@@ -200,7 +200,7 @@
 import {formatDate} from "_element-ui@2.15.6@element-ui/src/utils/date-util";
 
 export default {
-  name: "LatestBlog",
+  name: "FollowBlog",
   data () {
     return {
       avatarURL: this.$store.state.avatarURL,
@@ -229,7 +229,7 @@ export default {
       setTimeout(() => {
         const _this = this
         const currentPage = _this.currentPage
-        _this.$axios.get("/blog/blogs?currentPage=" + currentPage,  {
+        _this.$axios.get("/blog/followBlogs?currentPage=" + currentPage,  {
           headers: {
             "Authorization": localStorage.getItem("token")
           }
@@ -237,7 +237,6 @@ export default {
           if (res.data.data.length != 0) {
             _this.blogs = _this.blogs.concat(res.data.data)
           }
-          // _this.blogs = res.data.data.records
           _this.currentPage = ++_this.currentPage
           _this.total = _this.blogs.length
           _this.sum = res.data.data.length
