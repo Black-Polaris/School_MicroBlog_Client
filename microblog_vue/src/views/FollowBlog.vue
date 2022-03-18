@@ -22,7 +22,7 @@
                   </router-link>
                 </div>
               </el-col>
-              <el-col :span="4" :offset="11"><div style="font-size: 10px;" dataformatas="yyyy-MM-dd HH:mm:ss">{{ blog.createDate }}</div></el-col>
+              <el-col :span="4" :offset="10"><div style="font-size: 10px;" dataformatas="yyyy-MM-dd HH:mm:ss">{{ blog.createDate }}</div></el-col>
               <el-col :span="3">
                 <el-button v-show="blog.userId != userId" :class="blog.hadFollow?'el-icon-star-on':'el-icon-star-off'" :type="blog.hadFollow?'success':'primary'" round @click="doFollow(blog)">
                   {{ blog.hadFollow?'已关注':'关注' }}
@@ -98,7 +98,7 @@
                   </router-link>
                 </div>
               </el-col>
-              <el-col :span="4" :offset="11"><div style="font-size: 10px;" dataformatas="yyyy-MM-dd HH:mm:ss">{{ blog.createDate }}</div></el-col>
+              <el-col :span="4" :offset="10"><div style="font-size: 10px;" dataformatas="yyyy-MM-dd HH:mm:ss">{{ blog.createDate }}</div></el-col>
               <el-col :span="3">
                 <el-button v-show="blog.userId != userId" :class="blog.hadFollow?'el-icon-star-on':'el-icon-star-off'" :type="blog.hadFollow?'success':'primary'" round @click="doFollow(blog)">
                   {{ blog.hadFollow?'已关注':'关注' }}
