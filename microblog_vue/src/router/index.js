@@ -74,12 +74,18 @@ const routes = [
   {
     path: '/groupChat',
     name: 'GroupChat',
-    component: GroupChat
+    component: GroupChat,
+    meta: {
+      requireAuth: true
+    }
   },
   {
     path: '/chat',
     name: 'Chat',
-    component: Chat
+    component: Chat,
+    meta: {
+      requireAuth: true
+    }
   }
 ]
 

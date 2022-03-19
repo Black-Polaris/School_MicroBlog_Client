@@ -22,7 +22,13 @@
                           </div>
                         </el-col>
                         <el-col :span="19" :offset="1">
-                          <el-row :span="6"><div style="font-weight: bold; text-align: left; margin-left: 5px;">{{ users[(i-1)*2+j-1].nickname }}</div></el-row>
+                          <el-row :span="6">
+                            <div style="font-weight: bold; text-align: left; margin-left: 5px;">
+                              <router-link style="text-decoration: none;font-weight: bold;color: #333333;font-family: 'Microsoft YaHei'" :to="{name: 'UserBlogs', params: { userId: users[(i-1)*2+j-1].nickname }}">
+                                {{ users[(i-1)*2+j-1].nickname }}
+                              </router-link>
+                            </div>
+                          </el-row>
                           <el-row :span="6"><div style="font-size: 10px; text-align: left; margin-left: 5px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap">简介：{{ users[(i-1)*2+j-1].description }}</div></el-row>
                         </el-col>
                       </el-row>

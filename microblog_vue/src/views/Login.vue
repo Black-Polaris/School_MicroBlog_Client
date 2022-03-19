@@ -60,8 +60,12 @@ export default {
                 console.log(_this.$store.getters.getUser)
 
                 _this.$router.push('/blogs')
-              })
-
+              }).catch(error => {
+            this.$notify.error({
+              title: '错误',
+              message: '账号或者密码错误'
+            });
+          })
         } else {
           return false;
         }

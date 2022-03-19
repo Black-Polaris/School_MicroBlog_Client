@@ -209,6 +209,7 @@
 
       <el-dialog
           width="850px"
+          @open="open()"
           :visible.sync="dialogVisible">
         <div class="dialog">
           <div class="top">
@@ -304,22 +305,10 @@ export default {
     this.socket.onmessage = event => {
       this.msgList.push(JSON.parse(event.data))
     }
-    // 为防止网络和其他一些原因，每隔一段时间自动从信箱中获取信息
-    this.interval = setInterval(() => {
-      const formDate = new FormData()
-      formDate.append("fromId", this.$store.getters.getUser.id)
-      formDate.append("toId", this.user.id)
-
-      this.$axios.post("/message/pullBothMsg", formDate,{
-        headers: {
-          "Authorization": localStorage.getItem("token")
-        }
-      }).then(res => {
-        this.msgList = res.data.data
-      }).catch(err => {
-        console.log(err)
-      })
-    }, 15000)
+    // // 为防止网络和其他一些原因，每隔一段时间自动从信箱中获取信息
+    // this.interval = setInterval(() => {
+    //
+    // }, 15000)
   },
   beforeDestroy() {
     // 清楚定时器的设置
@@ -503,7 +492,23 @@ export default {
           }
         })
       }
-    }
+    },
+    // 打开私信显示历史记录
+    open(){
+      const formDate = new FormData()
+      formDate.append("fromId", this.$store.getters.getUser.id)
+      formDate.append("toId", this.user.id)
+
+      this.$axios.post("/message/pullBothMsg", formDate,{
+        headers: {
+          "Authorization": localStorage.getItem("token")
+        }
+      }).then(res => {
+        this.msgList = res.data.data
+      }).catch(err => {
+        console.log(err)
+      })
+    },
 
   }
 }

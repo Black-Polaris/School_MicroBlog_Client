@@ -29,10 +29,11 @@ axios.interceptors.response.use(response => {
         }
 
         if (error.response.status === 401) {
+            ElementUI.Message.error(error.message, {duration: 2*1000})
             store.commit("REMOVE_INFO")
             router.push("/login")
         }
-        ElementUI.Message.error(error.message, {duration: 2*1000})
+        // ElementUI.Message.error(error.message, {duration: 2*1000})
         return Promise.reject(error)
 
     }
