@@ -92,7 +92,7 @@ export default {
           }).catch(error => {
             this.$notify.error({
               title: '错误',
-              message: '创建失败' + error
+              message: '创建失败' + error.data.data
             });
           })
         } else {
