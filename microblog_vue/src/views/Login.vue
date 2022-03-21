@@ -13,9 +13,9 @@
       </el-form-item>
 
       <el-form-item style="width: 100%">
-        <el-button type="primary" style="width: 40%; background: #505458;border: none;margin-right: 40px" @click="submitForm('ruleForm')">登录</el-button>
+        <el-button type="primary" style="width: 40%;border: none;margin-right: 40px" @click="submitForm('ruleForm')">登录</el-button>
         <router-link to="register">
-          <el-button type="primary" style="width: 40%;background-color: #505458;border: none">注册</el-button>
+          <el-button type="success" style="width: 40%;border: none">注册</el-button>
         </router-link>
       </el-form-item>
     </el-form>
