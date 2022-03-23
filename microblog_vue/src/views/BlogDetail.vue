@@ -237,7 +237,7 @@
                     <el-col :span="4">
                       <div style="font-weight: bold; text-align: left; margin-left: 5px;">
                         <router-link style="text-decoration: none;font-weight: bold;color: #333333;font-family: 'Microsoft YaHei'" :to="{name: 'UserBlogs', params: {userId: comment.user.id}}">
-                          {{ blog.user.nickname }}
+                          {{ comment.user.nickname }}
                         </router-link>
                       </div>
                     </el-col>

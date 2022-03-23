@@ -243,7 +243,7 @@ export default {
           _this.sum = res.data.data.length
         })
         this.loading = false
-      }, 500)
+      }, 1500)
     },
     // 预览点击的图片
     getPictureList(i, j, pictures) {

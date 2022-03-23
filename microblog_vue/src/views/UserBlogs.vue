@@ -213,7 +213,7 @@
           :visible.sync="dialogVisible">
         <div class="dialog">
           <div class="top">
-            <h3 style="text-align: center">聊天室</h3>
+            <h3 style="text-align: center"> 用户：{{user.nickname}} </h3>
           </div>
           <div class="middle" @mouseover="over" @mouseout="out">
             <div v-if="msgList.length">
@@ -359,7 +359,7 @@ export default {
           _this.sum = res.data.data.length
         })
         this.loading = false
-      }, 500)
+      }, 1500)
     },
     // 预览点击的图片
     getPictureList(i, j, pictures) {

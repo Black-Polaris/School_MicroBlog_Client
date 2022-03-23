@@ -63,6 +63,7 @@
 
   <!--    修改密码-->
     <el-dialog
+        width="500px"
       :visible.sync="dialogVisible"
       :before-close="handleClose">
     <el-form :model="passRuleForm" status-icon :rules="rules" ref="passRuleForm" label-width="100px" class="demo-ruleForm">
