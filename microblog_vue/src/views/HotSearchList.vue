@@ -20,8 +20,6 @@
 
       </el-card>
     </div>
-    <p v-if="loading">加载中...</p>
-    <p v-if="noMore">没有更多了</p>
   </div>
 </template>
 
@@ -31,29 +29,20 @@ export default {
   data () {
     return {
       hotSearchList: [],
-      total: 50,
-      sum: -1,
-      loading: false,
       rank : 0
     }
   },
-  computed: {
-    noMore () {
-      return this.sum === 0
-    },
-    disabled () {
-      return this.loading || this.noMore
-    }
+  mounted() {
+    this.listEven();
   },
-  created() {
-    this.loading = true
+  methods: {
+    listEven() {
       const _this = this
       _this.$axios.get("/blog/hotSearch")
-          .then(res => {
-            _this.hotSearchList = res.data.data
-            _this.sum = res.data.data.length
-          })
-      this.loading = false
+        .then(res => {
+          _this.hotSearchList = res.data.data;
+        })
+    }
   }
 
 }

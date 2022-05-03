@@ -122,7 +122,7 @@
                     <el-row :gutter="10">
                       <el-col :span="2">
                         <div>
-                          <el-avatar :src="avatarURL + (blog.fromBlog == null ? null : blog.fromBlog.user.avatar.avatarUrl)"></el-avatar>
+                          <el-avatar :src="blog.fromBlog == null ? null : avatarURL + blog.fromBlog.user.avatar.avatarUrl"></el-avatar>
                         </div>
                       </el-col>
                       <el-col :span="4"><div style="font-weight: bold; text-align: left; margin-left: 5px;">{{ blog.fromBlog == null ? null : blog.fromBlog.user.nickname }}</div></el-col>
@@ -243,7 +243,7 @@ export default {
           _this.sum = res.data.data.length
         })
         this.loading = false
-      }, 1500)
+      }, 500)
     },
     // 预览点击的图片
     getPictureList(i, j, pictures) {

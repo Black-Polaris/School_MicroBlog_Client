@@ -16,9 +16,11 @@
               <!-- 上传对话框 -->
               <el-dialog title="上传" :visible.sync="dialogOfUpload" width="35%" style="text-align: center;">
                 <el-upload class="upload-demo" action="#"
-                           drag multiple="false"
-                           :auto-upload="false"
-                           :file-list="fileList" limit="1"
+                           drag
+                           :multiple= "false"
+                           :auto-upload= "false"
+                           :file-list= "fileList"
+                           :limit= "1"
                            :on-change="fileChange">
                   <i class="el-icon-upload"></i>
                   <div class="el-upload__text">将图片拖到此处，或<em>点击上传</em></div>

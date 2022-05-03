@@ -6,8 +6,8 @@
       </div>
     </div>
     <div class="middle" @mouseover="over" @mouseout="out">
-      <div v-if="msgList.length">
-        <div v-for="msg in msgList">
+      <div v-if="myMsgList.length">
+        <div v-for="msg in myMsgList">
           <div class="msg" :style="msg.fromId === contact.id ? 'flex-direction: row;' : 'flex-direction: row-reverse;'">
             <div class="avatar">
               <el-avatar :src="avatarURL + msg.fromUser.avatar.avatarUrl"/>
@@ -68,24 +68,27 @@ export default {
       this.msgList.push(JSON.parse(event.data))
     }
     // 为防止网络和其他一些原因，每隔一段时间自动从信箱中获取信息
-    this.interval = setInterval(() => {
-      const formDate = new FormData()
-      formDate.append("fromId", this.$store.getters.getUser.id)
-      formDate.append("toId", this.contact.id)
 
-      this.$axios.post("/message/pullBothMsg", formDate,{
-        headers: {
-          "Authorization": localStorage.getItem("token")
-        }
-      }).then(res => {
-        this.msgList = res.data.data
-      }).catch(err => {
-        console.log(err)
-      })
-    }, 15000)
+    this.interval = setInterval(() => {
+      if(this.contact != null) {
+        const formDate = new FormData()
+        formDate.append("fromId", this.$store.getters.getUser.id)
+        formDate.append("toId", this.contact.id)
+
+        this.$axios.post("/message/pullBothMsg", formDate,{
+          headers: {
+            "Authorization": localStorage.getItem("token")
+          }
+        }).then(res => {
+          this.myMsgList = res.data.data
+        }).catch(err => {
+          console.log(err)
+        })
+      }
+      }, 1000)
   },
   beforeDestroy() {
-    !this.interval &&clearInterval(this.interval)
+    clearInterval(this.interval)
   },
   data() {
     return {
@@ -97,10 +100,11 @@ export default {
       interval: null,
       isEmptyText: true,
       userId: this.$store.getters.getUser.id,
+      myMsgList: this.msgList
     }
   },
   watch: {
-    msgList() {
+    myMsgList() {
       const mid = document.querySelector('.middle')
       this.$nextTick(() => {
         mid && (mid.scrollTop = mid.scrollHeight)

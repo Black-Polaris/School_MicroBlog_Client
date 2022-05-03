@@ -17,7 +17,7 @@
       <span v-show="hasLogin"><el-button class="el-icon-switch-button" type="danger" round style="float:right;margin: 10px" @click="logout">退出</el-button></span>
 <!--      发表微博和头像-->
       <el-button type="primary" icon="el-icon-edit" round style="float:right;margin: 10px;" @click="dialogVisible = true">发表微博</el-button>
-      <el-avatar :size="40" :src="avatarURL + user.avatar" style="float:right;margin: 10px;"></el-avatar>
+      <el-avatar :size="40" :src="user.avatar == '' ? '' : avatarURL + user.avatar" style="float:right;margin: 10px;"></el-avatar>
 
 <!--      微博搜索栏-->
       <div style="text-align: center;margin: 15px">
@@ -109,7 +109,7 @@ export default {
   },
   // 回显用户信息
   created() {
-    if (this.$store.getters.getUser.username) {
+    if (this.$store.getters.getUser) {
       this.user.username = this.$store.getters.getUser.username
       this.user.avatar = this.$store.getters.getUser.avatar.avatarUrl
       this.hasLogin = true
