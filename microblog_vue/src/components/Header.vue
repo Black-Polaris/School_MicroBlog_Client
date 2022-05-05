@@ -119,17 +119,19 @@ export default {
     if (this.$store.getters.getUser) {
       this.user.username = this.$store.getters.getUser.username
       this.user.avatar = this.$store.getters.getUser.avatar == null ? '' : this.$store.getters.getUser.avatar.avatarUrl
-      this.hasLogin = true
 
-      const formData = new FormData();
-      formData.append("userId", this.$store.getters.getUser.id);
-      this.$axios.post("/blog/getCount", formData, {
-        headers: {
-          "Authorization": localStorage.getItem("token")
-        }
-      }).then(res => {
-        this.messNum = res.data.data.commentCount + res.data.data.likeCount
-      })
+      if (this.$store.getters.getUser.id){
+        this.hasLogin = true
+        const formData = new FormData();
+        formData.append("userId", this.$store.getters.getUser.id);
+        this.$axios.post("/blog/getCount", formData, {
+          headers: {
+            "Authorization": localStorage.getItem("token")
+          }
+        }).then(res => {
+          this.messNum = res.data.data.commentCount + res.data.data.likeCount
+        })
+      }
     }
   },
   mounted() {

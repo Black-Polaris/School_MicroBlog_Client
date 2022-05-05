@@ -57,7 +57,7 @@ export default {
                 _this.$store.commit("SET_USERINFO", userInfo)
 
                 // 获取用户信息
-                console.log(_this.$store.getters.getUser)
+                // console.log(_this.$store.getters.getUser)
 
                 _this.$router.push('/blogs')
               }).catch(error => {

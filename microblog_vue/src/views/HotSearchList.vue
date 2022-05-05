@@ -2,13 +2,13 @@
   <div class="infinite-list-wrapper">
     <div class="list">
       <!--        微博卡片-->
-      <el-card shadow="hover" style=" margin-bottom: 10px" v-for="hotSearch in hotSearchList" class="list-item" >
+      <el-card shadow="hover" style=" margin-bottom: 10px" v-for="(hotSearch, index) in hotSearchList" class="list-item" >
         <!--            微博内容-->
         <el-row type="flex" >
           <el-col>
             <div style="margin-left: 10px">
               <p style="text-align: left">
-                <span class="el-icon-medal" style="color: red;font-style: italic">No.{{ ++rank }}:&nbsp</span>
+                <span class="el-icon-medal" style="color: red;font-style: italic">No.{{ index + 1 }}:&nbsp</span>
                 <router-link style="text-decoration: none;font-weight: bold;color: #333333;font-family: 'Microsoft YaHei'" :to="{name: 'SearchBlog', params: {searchWords: hotSearch.value}}">
                   {{ hotSearch.value }}
                 </router-link>
@@ -29,20 +29,14 @@ export default {
   data () {
     return {
       hotSearchList: [],
-      rank : 0
     }
   },
-  mounted() {
-    this.listEven();
-  },
-  methods: {
-    listEven() {
-      const _this = this
-      _this.$axios.get("/blog/hotSearch")
+  created() {
+    const _this = this
+    _this.$axios.get("/blog/hotSearch")
         .then(res => {
           _this.hotSearchList = res.data.data;
         })
-    }
   }
 
 }
