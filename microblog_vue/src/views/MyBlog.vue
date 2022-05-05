@@ -231,6 +231,8 @@ export default {
           _this.currentPage = ++_this.currentPage
           _this.total = _this.blogs.length
           _this.sum = res.data.data.length
+        }).catch(err => {
+          console.log(err)
         })
         this.loading = false
       }, 500)

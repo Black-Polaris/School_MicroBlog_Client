@@ -11,6 +11,10 @@
       <el-menu-item v-for="(item,i) in navList" :key=i :index="item.name">
         {{item.navItem}}
       </el-menu-item>
+      <el-menu-item :index="'/MyMess'">
+        我的消息
+        <el-badge :value="messNum" v-if="messNum>0" :max="99" style="bottom: 10px" size="mini"></el-badge>
+      </el-menu-item>
 
 <!--      登录和退出按钮-->
       <span v-show="!hasLogin"><el-button class="el-icon-switch-button" type="primary" round style="float:right;margin: 10px;" href="/login" @click="login">登录</el-button></span>
@@ -49,12 +53,15 @@
 <script>
 
 import BlogEdit from "@/views/BlogEdit";
+import {EventBus} from "@/event-bus";
+
 export default {
   name: "Header",
   components: {BlogEdit},
   inject: ['reload'],
   data() {
     return {
+      messNum: 0,
       navList:[
         {name:'/blogs',navItem:'首页'},
         {name: '/chat', navItem: '聊天'},
@@ -111,9 +118,24 @@ export default {
   created() {
     if (this.$store.getters.getUser) {
       this.user.username = this.$store.getters.getUser.username
-      this.user.avatar = this.$store.getters.getUser.avatar.avatarUrl
+      this.user.avatar = this.$store.getters.getUser.avatar == null ? '' : this.$store.getters.getUser.avatar.avatarUrl
       this.hasLogin = true
+
+      const formData = new FormData();
+      formData.append("userId", this.$store.getters.getUser.id);
+      this.$axios.post("/blog/getCount", formData, {
+        headers: {
+          "Authorization": localStorage.getItem("token")
+        }
+      }).then(res => {
+        this.messNum = res.data.data.commentCount + res.data.data.likeCount
+      })
     }
+  },
+  mounted() {
+    EventBus.$on("Msg",  (msg) => {
+      this.messNum = this.messNum - msg >= 0 ? this.messNum - msg : 0;
+    })
   }
 
 }

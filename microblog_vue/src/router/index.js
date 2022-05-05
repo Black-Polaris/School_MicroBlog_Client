@@ -11,6 +11,7 @@ import UserBlogs from "@/views/UserBlogs";
 import Register from "@/views/Register";
 import GroupChat from "@/views/GroupChat";
 import Chat from "@/views/Chat";
+import MyMess from "@/views/MyMess";
 
 Vue.use(VueRouter)
 
@@ -64,9 +65,20 @@ const routes = [
     component: BlogDetail
   },
   {
+    path: '/MyMess',
+    name: 'MyMess',
+    component: MyMess,
+    meta: {
+      requireAuth: true
+    }
+  },
+  {
     path: '/mine',
     name: 'Mine',
-    component: Mine
+    component: Mine,
+    meta: {
+      requireAuth: true
+    }
   },
   {
     path: '/search/:searchWords',
