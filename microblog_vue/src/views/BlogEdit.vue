@@ -19,7 +19,7 @@
         <el-col :span="3">
           <Emoji></Emoji>
         </el-col>
-        <el-col :offset="20">
+        <el-col :offset="18">
           <el-button style="margin-top: 5px" type="primary" @click="publishBlog()">发布</el-button>
         </el-col>
       </el-row>
