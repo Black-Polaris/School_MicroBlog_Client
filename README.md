@@ -1,7 +1,7 @@
 # School_MicroBlog_Client
 
 ## 基于SpringBoot+Vue+Mybatis+Redis的前后端分离的校园微博系统 *客户端部分*
-[前端代码跳转链接](https://github.com/Black-Polaris/School_MicroBlog)  [https://github.com/Black-Polaris/School_MicroBlog](https://github.com/Black-Polaris/School_MicroBlog)
+[后端代码跳转链接](https://github.com/Black-Polaris/School_MicroBlog)  [https://github.com/Black-Polaris/School_MicroBlog](https://github.com/Black-Polaris/School_MicroBlog)
 
 ## 系统的主要实现功能
   * 通过Redis实现热门微博和微博热搜
